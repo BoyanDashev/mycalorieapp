@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import './index.css';
 
 const user_regex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -67,18 +68,12 @@ const Register = () => {
     }
 
 
-    return (
-      <section>
-        <p
-          ref={errRef}
-          classname={errMsg ? "errmsg" : "offscreen"}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </p>
-        <h1>Register</h1>
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <section className="bg-sky-500 flex size-30 flex-col items-center justify-center border-8 border-sky-500 rounded-lg">
+        <h1 className="mb-3 font-bold text-xl">Register</h1>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="username">
+          <label htmlFor="username" className="mr-2">
             Username:
             <span className={validName ? "valid" : "hide"}>
               <FontAwesomeIcon icon={faCheck} />
@@ -90,6 +85,7 @@ const Register = () => {
           <input
             type="text"
             id="username"
+            className="border-2 rounded-lg border-slate-950"
             ref={userRef}
             autoComplete="off"
             onChange={(e) => setUser(e.target.value)}
@@ -101,9 +97,9 @@ const Register = () => {
           />
           <p
             id="uidnote"
-            className={
+            className={`${
               userFocus && user && !validName ? "instructions" : "offscreen"
-            }
+            } mt-4 mb-4`}
           >
             <FontAwesomeIcon icon={faInfoCircle} />
             4 to 24 characters.
@@ -113,7 +109,7 @@ const Register = () => {
             Letters, numbers, underscores, hyphens allowed.
           </p>
 
-          <label htmlFor="password">
+          <label htmlFor="password" className="mr-2">
             Password:
             <FontAwesomeIcon
               icon={faCheck}
@@ -127,6 +123,7 @@ const Register = () => {
           <input
             type="password"
             id="password"
+            className="border-2 rounded-lg border-slate-950"
             onChange={(e) => setPwd(e.target.value)}
             value={pwd}
             required
@@ -137,7 +134,9 @@ const Register = () => {
           />
           <p
             id="pwdnote"
-            className={pwdFocus && !validPwd ? "instructions" : "offscreen"}
+            className={`${
+              pwdFocus && !validPwd ? "instructions" : "offscreen"
+            } mt-4 mb-4`}
           >
             <FontAwesomeIcon icon={faInfoCircle} />
             8 to 24 characters.
@@ -154,7 +153,7 @@ const Register = () => {
             <span aria-label="percent">%</span>
           </p>
 
-          <label htmlFor="confirm_pwd">
+          <label htmlFor="confirm_pwd" className="mr-2">
             Confirm Password:
             <FontAwesomeIcon
               icon={faCheck}
@@ -166,6 +165,7 @@ const Register = () => {
             />
           </label>
           <input
+            className="border-2 rounded-lg border-slate-950"
             type="password"
             id="confirm_pwd"
             onChange={(e) => setMatchPwd(e.target.value)}
@@ -178,20 +178,25 @@ const Register = () => {
           />
           <p
             id="confirmnote"
-            className={matchFocus && !validMatch ? "instructions" : "offscreen"}
+            className={`${
+              matchFocus && !validMatch ? "instructions" : "offscreen"
+            } mt-4 mb-4`}
           >
             <FontAwesomeIcon icon={faInfoCircle} />
             Must match the first password input field.
           </p>
+          <div className="flex justify-center items-center h-full">
+            <button
+              className="bg-white px-4 py-1 mb-3 font-bold border-2 rounded-lg border-slate-950"
+              disabled={!validName || !validPwd || !validMatch ? true : false}
 
-          <button
-            disabled={!validName || !validPwd || !validMatch ? true : false}
-          >
-            Sign Up
-          </button>
+            >
+              Sign Up
+            </button>
+          </div>
         </form>
 
-        <p>
+        <p className="bg-white border-2 border-slate-950">
           Already registered?
           <br />
           <span className="line">
@@ -200,7 +205,8 @@ const Register = () => {
           </span>
         </p>
       </section>
-    );
+    </div>
+  );
 }
 
 export default Register
