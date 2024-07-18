@@ -2,9 +2,10 @@ const router = require("express").Router();
 let Example = require("../modules/module.js");
 
 router.route("/").get((req, res) => {
-  Example.find()
-    .then((examples) => res.json(examples))
-    .catch((err) => res.status(400).json("Error: " + err));
+  // Example.find()
+  //   .then((examples) => res.json(examples))
+  //   .catch((err) => res.status(400).json("Error: " + err));
+  res.json({message: 'Hello world'})
 });
 
 router.route("/add").post((req, res) => {
