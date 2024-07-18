@@ -18,6 +18,19 @@ const Login = () => {
     const [password, setPwd] = useState("");
     const [errMSg, setErrMsg] = useState("");
     const [success, setSuccess] = useState("");
+    
+    const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("/api/route")
+      .then((response) => {
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the data!", error);
+      });
+  }, []);
 
     useEffect(() => {
         setErrMsg('')
@@ -84,6 +97,7 @@ const Login = () => {
           <div className="flex items-center justify-center h-screen">
             <section className="bg-sky-500 flex flex-col items-center justify-center w-1/4 h-1/2 border-8 border-sky-500 rounded-lg">
               <p className={errMSg ? "errmsg" : "offscreen"}>{errMSg}</p>
+              <h1>{message}</h1>
               <h1 className="mb-3 font-bold text-xl">Sign In</h1>
               <form onSubmit={handleSubmit}>
                 <label htmlFor="username" className="mr-2">
