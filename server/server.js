@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 const User = require("./modules/module"); 
+const authRoutes = require("./routes/authRoutes")
 
 // List of allowed origins
 const allowedOrigins = [
@@ -16,21 +17,10 @@ app.use(express.json());
 
 
 // CORS options
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg =
-        "The CORS policy for this site does not allow access from the specified Origin.";
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-};
+//  
 
 // Use CORS middleware
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // Middleware
 app.use(bodyParser.json());
@@ -50,44 +40,48 @@ connection.on("error", (err) => {
 });
 connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
+   console.log(`Connected to database: ${mongoose.connection.name}`);
+   console.log(`Connection host: ${mongoose.connection.host}`);
 });
 
 // Example API route
-const exampleRouter = require("./routes/route");
-app.use("/api/route", exampleRouter);
+// const exampleRouter = require("./routes/authRoutes");
+// app.use("/api/route", exampleRouter);
 
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
 
-// Register a new user
-app.post('/register', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const newUser = new User({ username, password });
-    await newUser.save();
-    res.status(201).json({ message: 'User registered successfully!' });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+app.use("/api", authRoutes);
 
-// Login a user
-app.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid username or password' });
-    }
-    const isMatch = await user.isValidPassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid username or password' });
-    }
-    res.status(200).json({ message: 'Login successful!' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Register a new user
+// app.post('/register', async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     const newUser = new User({ username, password });
+//     await newUser.save();
+//     res.status(201).json({ message: 'User registered successfully!' });
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
+
+// // Login a user
+// app.post('/login', async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     const user = await User.findOne({ username });
+//     if (!user) {
+//       return res.status(400).json({ error: 'Invalid username or password' });
+//     }
+//     const isMatch = await user.isValidPassword(password);
+//     if (!isMatch) {
+//       return res.status(400).json({ error: 'Invalid username or password' });
+//     }
+//     res.status(200).json({ message: 'Login successful!' });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 

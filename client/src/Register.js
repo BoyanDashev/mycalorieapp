@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import './index.css';
+import axios from "axios"; 
 
 const user_regex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -54,18 +55,32 @@ const Register = () => {
     }, [user, pwd, matchPwd])
     
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        // ako nqkoi se opita da hakne s js kod
-        const v1 = user_regex.test(user);
-        const v2 = password_regex.test(pwd);
-        if (!v1 || !v2) {
-            setErrMsg("Invalid entry")
-            return;
-        }
-        console.log(user, pwd);
+      e.preventDefault();
+      // Validation check
+      const v1 = user_regex.test(user);
+      const v2 = password_regex.test(pwd);
+      if (!v1 || !v2) {
+        setErrMsg("Invalid entry");
+        return;
+      }
+      if (!validMatch) {
+        setErrMsg("Passwords do not match");
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/register",
+          { username: user, password: pwd }
+        );
         setSuccess(true);
-        
-    }
+        setErrMsg("");
+      } catch (error) {
+        setErrMsg(error.response?.data?.error || "An error occurred");
+      }
+    };
+  
+  
 
 
   return (

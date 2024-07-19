@@ -21,16 +21,16 @@ const Login = () => {
     
     const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    axios
-      .get("/api/route")
-      .then((response) => {
-        setMessage(response.data.message);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("/api/route")
+  //     .then((response) => {
+  //       setMessage(response.data.message);
+  //     })
+  //     .catch((error) => {
+  //       console.error("There was an error fetching the data!", error);
+  //     });
+  // }, []);
 
     useEffect(() => {
         setErrMsg('')

@@ -13,7 +13,7 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
     </AuthProvider>
-    <Login/>
+    <Register/>
     
   </React.StrictMode>
 );
