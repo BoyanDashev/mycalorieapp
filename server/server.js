@@ -17,10 +17,11 @@ app.use(express.json());
 
 
 // CORS options
-//  
+//
 
 // Use CORS middleware
 // app.use(cors(corsOptions));
+app.use(cors());
 
 // Middleware
 app.use(bodyParser.json());
@@ -55,33 +56,5 @@ app.listen(port, () => {
 
 app.use("/api", authRoutes);
 
-// Register a new user
-// app.post('/register', async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-//     const newUser = new User({ username, password });
-//     await newUser.save();
-//     res.status(201).json({ message: 'User registered successfully!' });
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
 
-// // Login a user
-// app.post('/login', async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-//     const user = await User.findOne({ username });
-//     if (!user) {
-//       return res.status(400).json({ error: 'Invalid username or password' });
-//     }
-//     const isMatch = await user.isValidPassword(password);
-//     if (!isMatch) {
-//       return res.status(400).json({ error: 'Invalid username or password' });
-//     }
-//     res.status(200).json({ message: 'Login successful!' });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
