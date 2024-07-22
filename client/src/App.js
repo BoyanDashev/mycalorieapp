@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import NotFound from "./components/NotFound";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/api/login">Login</Link>
           </li>
           <li>
             <Link to="/api/register">Register</Link>
@@ -22,9 +23,10 @@ function App() {
       </nav>
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />
         {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="*" element={<NotFound/>}/>
       </Routes>
     </Router>
   );

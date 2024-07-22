@@ -1,13 +1,6 @@
 const router = require("express").Router();
 let User = require("../modules/module.js");
 
-// router.route("/").get((req, res) => {
-//   // Example.find()
-//   //   .then((examples) => res.json(examples))
-//   //   .catch((err) => res.status(400).json("Error: " + err));
-//   res.json({message: 'Hello world'})
-// });
-
 // Registration route
 router.post('/register', async (req, res) => {
   try {

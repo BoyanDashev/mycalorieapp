@@ -15,18 +15,10 @@ const allowedOrigins = [
 
 app.use(express.json());
 
-
-// CORS options
-//
-
-// Use CORS middleware
-// app.use(cors(corsOptions));
 app.use(cors());
 
-// Middleware
 app.use(bodyParser.json());
 
-// MongoDB connection
 mongoose
   .connect("mongodb://localhost:27017/my-app", {
     useNewUrlParser: true,
@@ -45,9 +37,6 @@ connection.once("open", () => {
    console.log(`Connection host: ${mongoose.connection.host}`);
 });
 
-// Example API route
-// const exampleRouter = require("./routes/authRoutes");
-// app.use("/api/route", exampleRouter);
 
 // Start server
 app.listen(port, () => {
