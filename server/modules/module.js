@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-// Define the schema
+
 const userSchema = new Schema(
   {
     username: {
@@ -11,7 +11,7 @@ const userSchema = new Schema(
       unique: true,
       minlength: 3,
       maxlength: 30,
-      trim: true, // Remove any leading or trailing spaces
+      trim: true, 
     },
     password: {
       type: String,
@@ -20,11 +20,11 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically create `createdAt` and `updatedAt` fields
+    timestamps: true, 
   }
 );
 
-// Pre-save hook to hash the password
+
 userSchema.pre("save", async function (next) {
   try {
     if (!this.isModified("password")) {
