@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import "../index.css";
+import { useState, useEffect, useRef, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "../API/axios";
-import { Link } from "react-router-dom";
-
+import AuthContext from "../context/authProvider";
 const Login = () => {
+  const { setAuth, refreshAccessToken } = useContext(AuthContext);
+  const navigate = useNavigate();
   const userRef = useRef();
   const errRef = useRef();
 
@@ -25,10 +26,20 @@ const Login = () => {
         username: user,
         password: password,
       });
+
       if (response.status === 200) {
+        const { accessToken, refreshToken } = response.data;
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        setAuth({ username: user }); // Update context with user info
         setSuccess(true);
         setErrMsg("");
         setMessage("You are logged in!");
+
+        // Redirect to home or other page
+        navigate("/home");
+        console.log(accessToken);
       }
     } catch (error) {
       if (error.response) {
