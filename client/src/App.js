@@ -5,6 +5,7 @@ import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import "./App.css";
 import Home from "./components/Home";
+import Profile from "./components/Profile";
 
 function App() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -155,6 +156,7 @@ function App() {
       </nav>
 
       <Routes>
+        <Route path="/api/profile" element={<Profile/>}/>
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />

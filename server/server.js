@@ -6,12 +6,15 @@ const app = express();
 const port = process.env.PORT || 5000;
 const User = require("./modules/module"); 
 const authRoutes = require("./routes/authRoutes")
+const cookieParser = require("cookie-parser");
 
 // List of allowed origins
 const allowedOrigins = [
   "http://localhost:3000",
   "http://your-production-client-url.com",
 ];
+
+app.use(cookieParser()); 
 
 app.use(express.json());
 
