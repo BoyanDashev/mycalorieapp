@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import "../index.css";
-import axios from "../API/axios";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 import { Link } from "react-router-dom";
+import "../index.css";
 
 const Login = () => {
   const userRef = useRef();
@@ -13,29 +13,21 @@ const Login = () => {
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
 
+  const { login } = useContext(AuthContext); // Access login function from context
+
   useEffect(() => {
     setErrMsg("");
   }, [user, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("http://localhost:3000/api/login", {
-        username: user,
-        password: password,
-      });
-      if (response.status === 200) {
-        setSuccess(true);
-        setErrMsg("");
-        setMessage("You are logged in!");
-      }
+      await login(user, password); // Call login from AuthContext
+      setSuccess(true);
+      setErrMsg("");
+      setMessage("You are logged in!");
     } catch (error) {
-      if (error.response) {
-        setErrMsg(error.response.data.error || "An error occurred");
-      } else {
-        setErrMsg("An error occurred. Please try again later.");
-      }
+      setErrMsg("Login failed. Please try again.");
     }
   };
 
@@ -102,10 +94,7 @@ const Login = () => {
           </form>
           <div className="w-full text-center p-4 mt-6">
             <span className="line">
-              <Link
-                to="/api/register"
-                className="text-blue-600 hover:underline"
-              >
+              <Link to="/register" className="text-blue-600 hover:underline">
                 New User? Sign Up
               </Link>
             </span>

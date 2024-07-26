@@ -1,15 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import{ AuthProvider, AuthContext }  from "./context/authContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import "./App.css";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import ProtectedRoute from "./components/Protectedroutes";
 
 function App() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const { isAuthenticated, logout } = useContext(AuthContext);
 
   // Toggle the dropdown menu
   const toggleDropdown = () => {
@@ -92,22 +96,45 @@ function App() {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/api/login"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/api/register"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Register
-                </Link>
-              </li>
+              {isAuthenticated ? (
+                <>
+                  <li>
+                    <Link
+                      to="/api/profile"
+                      className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={logout}
+                      className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/api/login"
+                      className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/api/register"
+                      className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Register
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -156,7 +183,10 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/api/profile" element={<Profile/>}/>
+        <Route
+          path="/api/profile"
+          element={<Profile/> } />
+        
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
@@ -166,4 +196,10 @@ function App() {
   );
 }
 
-export default App;
+const AppWithAuth = () => (
+  <AuthProvider>
+    <App />
+  </AuthProvider>
+);
+
+export default AppWithAuth;
