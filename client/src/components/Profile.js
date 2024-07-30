@@ -33,15 +33,42 @@ function Profile() {
   }, [isAuthenticated]); // Dependency array includes isAuthenticated
 
   return (
-    <div>
-      <h2>Profile</h2>
-      {error ? (
-        <p>{error}</p>
-      ) : profile ? (
-        <pre>{JSON.stringify(profile, null, 2)}</pre>
-      ) : (
-        <p>Loading...</p>
-      )}
+    <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
+      <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 font-sans">
+          Welcome to your profile.
+        </h1>
+        <p className="text-lg text-gray-600 font-sans">
+          You can edit your name here:
+        </p>
+        <form>
+          <input
+            type="text"
+            placeholder="Edit your first name."
+            className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          ></input>
+          <input
+            type="text"
+            placeholder="Edit your last name."
+            className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          ></input>
+          <button className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+            Edit
+          </button>
+        </form>
+
+        <input></input>
+        <div>
+          <h2>Profile</h2>
+          {error ? (
+            <p>{error}</p>
+          ) : profile ? (
+            <pre>{JSON.stringify(profile, null, 2)}</pre>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
