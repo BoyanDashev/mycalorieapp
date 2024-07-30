@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginsuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,11 +31,14 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setIsAuthenticated(true);
         window.location.href = "/home"; // Redirect after login
+        
       } else {
         setIsAuthenticated(false);
+         setLoginSuccess(true);
       }
     } catch (error) {
       setIsAuthenticated(false);
+      setLoginSuccess(true);
     }
   };
 
@@ -53,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, loginsuccess }}>
       {children}
     </AuthContext.Provider>
   );

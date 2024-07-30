@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 
 const accessToken = process.env.ACCESS_TOKEN;
-const refreshToken = process.env.REFRESH_TOKEN;
 
 router.use(cookieParser()); // Make sure to use cookieParser middleware
 
@@ -26,6 +25,7 @@ router.post("/register", async (req, res) => {
 
 // Login route
 router.post("/login", async (req, res) => {
+  
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
