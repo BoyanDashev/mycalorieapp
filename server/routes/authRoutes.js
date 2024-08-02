@@ -70,9 +70,54 @@ function authenticateToken(req, res, next) {
 }
 
 // Protected route example
-router.get("/profile", authenticateToken, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.user });
+router.get("/profile", authenticateToken, async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) return res.status(404).json({ message: "User not found" });
+    // res.json(user);
+    res.json({ message: "This is a protected route", user: req.user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+
+  // res.json({ message: "This is a protected route", user: req.user });
 });
+
+router.put("/profile", authenticateToken, async (req, res) => {
+  try {
+    // Extract the user ID from the authenticated user and the new name from the request body
+    const userId = req.user.id; // Assuming `req.user` contains the authenticated user's ID
+    const { name } = req.body;
+
+    // Check if the `name` field is provided in the request body
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+
+    // Find the user by ID and update the `name` field
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name },
+      { new: true, runValidators: true } // Return the updated document and validate the update
+    );
+
+    // Check if the user was found and updated
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the updated user data as the response
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    // Handle any errors that occur during the update
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 
 // Logout route
 router.post("/logout", (req, res) => {
@@ -81,3 +126,28 @@ router.post("/logout", (req, res) => {
 });
 
 module.exports = router;
+
+// router.get("/profile/:id", authMiddleware, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     if (!user) return res.status(404).json({ message: "User not found" });
+//     res.json(user);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
+// // Update user profile
+// router.put("/profile/:id", authMiddleware, async (req, res) => {
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//     });
+//     if (!updatedUser)
+//       return res.status(404).json({ message: "User not found" });
+//     res.json(updatedUser);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
