@@ -23,7 +23,7 @@ function Profile() {
               withCredentials: true, // Include cookies for authentication
             }
           );
-          setProfile(response.data);
+          setProfile(response.data.user);
           setError(null); // Clear error if data is fetched successfully
         } catch (err) {
           setError("Failed to fetch profile data.");

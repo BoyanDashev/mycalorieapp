@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import{ AuthProvider, AuthContext }  from "./context/authContext";
+import { AuthProvider, AuthContext } from "./context/authContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
@@ -159,34 +159,53 @@ function App() {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/api/login"
-                  onClick={handleMenuItemClick}
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/api/register"
-                  onClick={handleMenuItemClick}
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Register
-                </Link>
-              </li>
+              {isAuthenticated ? (
+                <>
+                  <li>
+                    <Link
+                      to="/api/profile"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <button
+                    onClick={logout}
+                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/api/login"
+                      onClick={handleMenuItemClick}
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/api/register"
+                      onClick={handleMenuItemClick}
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Register
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
       </nav>
 
       <Routes>
-        <Route
-          path="/api/profile"
-          element={<Profile/> } />
-        
+        <Route path="/api/profile" element={<Profile />} />
+
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
