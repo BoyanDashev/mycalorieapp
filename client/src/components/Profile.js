@@ -6,12 +6,9 @@ function Profile() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
   const { isAuthenticated } = useContext(AuthContext);
-  const [firstname, setFirstName] = useState('');
-
-//   useEffect(() => {
-  
-// },[firstname])
-
+  const [firstname, setFirstName] = useState("");
+  const [totalweight, setWeight] = useState("");
+  const [totalheight, setHeight] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -23,7 +20,7 @@ function Profile() {
               withCredentials: true, // Include cookies for authentication
             }
           );
-          setProfile(response.data.user);
+          setProfile(response.data.user); // Set entire user object
           setError(null); // Clear error if data is fetched successfully
         } catch (err) {
           setError("Failed to fetch profile data.");
@@ -43,15 +40,20 @@ function Profile() {
     try {
       const response = await axios.put(
         "http://localhost:3000/api/profile/",
-        { name: firstname },
+        { name: firstname, weight: totalweight, height: totalheight },
         { withCredentials: true } // Include cookies for authentication
       );
       // Update profile state with the new data
       setProfile(response.data.user); // Adjust based on your server response structure
       setError(null);
     } catch (error) {
-      setError("Failed to edit the name");
+      setError("Failed to edit the profile");
     }
+  };
+
+  const calculateBMI = (weight, height) => {
+    const heightInMeters = height / 100; // Convert height from cm to meters
+    return weight / (heightInMeters * heightInMeters);
   };
 
   return (
@@ -61,7 +63,7 @@ function Profile() {
           Welcome to your profile.
         </h1>
         <p className="text-lg text-gray-600 font-sans">
-          You can edit your name here:
+          You can edit your personal details here:
         </p>
         <form onSubmit={handleSubmit}>
           <input
@@ -70,24 +72,49 @@ function Profile() {
             value={firstname}
             placeholder="Edit your first name."
             className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          ></input>
-          {/* <input
-            type="text"
-            placeholder="Edit your last name."
+          />
+
+          <input
+            type="number"
+            onChange={(e) => setWeight(e.target.value)}
+            value={totalweight}
+            placeholder="Edit or input your weight in kg."
             className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          ></input> */}
+          />
+
+          <input
+            type="number"
+            onChange={(e) => setHeight(e.target.value)}
+            value={totalheight}
+            placeholder="Edit or input your height in cm."
+            className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          />
           <button className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
             Edit
           </button>
         </form>
 
-        <input></input>
         <div>
           <h2>Profile</h2>
           {error ? (
             <p>{error}</p>
           ) : profile ? (
-            <pre>{JSON.stringify(profile, null, 2)}</pre>
+            <div>
+              <h3>Profile Information:</h3>
+              <p>
+                <strong>Name:</strong> {profile.name}
+              </p>
+              <p>
+                <strong>Weight:</strong> {profile.weight}
+              </p>
+              <p>
+                <strong>Height:</strong> {profile.height}
+              </p>
+              <p>
+                <strong>BMI:</strong>
+                {calculateBMI(profile.weight, profile.height).toFixed(2)}
+              </p>
+            </div>
           ) : (
             <p>Loading...</p>
           )}

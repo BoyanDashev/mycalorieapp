@@ -25,7 +25,6 @@ router.post("/register", async (req, res) => {
 
 // Login route
 router.post("/login", async (req, res) => {
-  
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -72,32 +71,34 @@ function authenticateToken(req, res, next) {
 // Protected route example
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
-    const user = req.user;
-    if (!user) return res.status(404).json({ message: "User not found" });
-    // res.json(user);
-    res.json({ message: "This is a protected route", user: req.user });
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "This is a protected route", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-
-  // res.json({ message: "This is a protected route", user: req.user });
 });
 
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
     // Extract the user ID from the authenticated user and the new name from the request body
     const userId = req.user.id; // Assuming `req.user` contains the authenticated user's ID
-    const { name } = req.body;
-
-    // Check if the `name` field is provided in the request body
-    if (!name) {
-      return res.status(400).json({ message: "Name is required" });
+    const { name, height, weight } = req.body;
+    if (!name || !height || !weight) {
+      return res
+        .status(400)
+        .json({ message: "There is an error with the input." });
     }
-
     // Find the user by ID and update the `name` field
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name },
+      { name, height, weight },
       { new: true, runValidators: true } // Return the updated document and validate the update
     );
 
@@ -116,9 +117,6 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-
-
-
 // Logout route
 router.post("/logout", (req, res) => {
   res.clearCookie("authToken");
@@ -126,5 +124,3 @@ router.post("/logout", (req, res) => {
 });
 
 module.exports = router;
-
-

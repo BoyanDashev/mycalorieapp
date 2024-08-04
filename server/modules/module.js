@@ -20,6 +20,14 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
+    },
+    height: {
+      type: Number,
+      min: 0,
+    },
+   weight: {
+     type: Number,
+     min: 0,
     }
   },
   {

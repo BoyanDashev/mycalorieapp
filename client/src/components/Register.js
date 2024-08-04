@@ -92,7 +92,7 @@ const Register = () => {
                   htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Your email
+                  Your Username:
                 </label>
                 <span className={validName ? "valid" : "hide"}>
                   <FontAwesomeIcon icon={faCheck} />
