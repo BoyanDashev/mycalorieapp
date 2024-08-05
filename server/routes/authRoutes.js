@@ -85,6 +85,49 @@ router.get("/profile", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/mainpage", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "This is a protected route", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/mainpage", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { calorie } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { calorie },
+      { new: true, runValidators: true } // Return the updated document and validate the update
+    );
+
+    // Check if the user was found and updated
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the updated user data as the response
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    // Handle any errors that occur during the update
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
     // Extract the user ID from the authenticated user and the new name from the request body

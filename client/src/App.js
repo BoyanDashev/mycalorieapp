@@ -108,6 +108,14 @@ function App() {
                     </Link>
                   </li>
                   <li>
+                    <Link
+                      to="/api/mainpage"
+                      className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Mainpage
+                    </Link>
+                  </li>
+                  <li>
                     <button
                       onClick={logout}
                       className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
@@ -170,6 +178,14 @@ function App() {
                       Profile
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      to="/api/mainpage"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Mainpage
+                    </Link>
+                  </li>
                   <button
                     onClick={logout}
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -206,7 +222,7 @@ function App() {
 
       <Routes>
         <Route path="/api/profile" element={<Profile />} />
-        <Route path="/api/mainpage" element={<MainPage/>}/>
+        <Route path="/api/mainpage" element={<MainPage />} />
 
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />

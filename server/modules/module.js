@@ -11,7 +11,7 @@ const userSchema = new Schema(
       unique: true,
       minlength: 3,
       maxlength: 30,
-      trim: true, 
+      trim: true,
     },
     password: {
       type: String,
@@ -25,15 +25,23 @@ const userSchema = new Schema(
       type: Number,
       min: 0,
     },
-   weight: {
-     type: Number,
-     min: 0,
-    }
+    weight: {
+      type: Number,
+      min: 0,
+    },
+    calorie: {
+      type: Number,
+      min: 0,
+      default: 2000,
+    },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
+// трябва да може да се направи, такаче да има две схеми и едната да се приема като масив в другата например
+// const userSchema = new Schema({
+// foods: [FoodsSchema]});
 
 
 userSchema.pre("save", async function (next) {
