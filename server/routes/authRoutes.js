@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../modules/module.js");
+const Food = require("../modules/foodModule.js");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
@@ -68,28 +69,27 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Protected route example
+// Protected route example - Fetch user profile with populated foods
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-
-    const user = await User.findById(userId);
+    const user = await User.findById(userId) // Populate foods
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ message: "This is a protected route", user });
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+// Route to get user details with populated foods
 router.get("/mainpage", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("foods"); // Populate foods
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -101,64 +101,73 @@ router.get("/mainpage", authenticateToken, async (req, res) => {
   }
 });
 
-router.put("/mainpage", authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { calorie } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { calorie },
-      { new: true, runValidators: true } // Return the updated document and validate the update
-    );
-
-    // Check if the user was found and updated
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Send the updated user data as the response
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", user: updatedUser });
-  } catch (error) {
-    // Handle any errors that occur during the update
-    res.status(500).json({ message: error.message });
-  }
-});
-
-
+// Update user profile information
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
-    // Extract the user ID from the authenticated user and the new name from the request body
-    const userId = req.user.id; // Assuming `req.user` contains the authenticated user's ID
+    const userId = req.user.id;
     const { name, height, weight } = req.body;
     if (!name || !height || !weight) {
       return res
         .status(400)
         .json({ message: "There is an error with the input." });
     }
-    // Find the user by ID and update the `name` field
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { name, height, weight },
-      { new: true, runValidators: true } // Return the updated document and validate the update
+      { new: true, runValidators: true }
     );
 
-    // Check if the user was found and updated
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send the updated user data as the response
     res
       .status(200)
       .json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
-    // Handle any errors that occur during the update
     res.status(500).json({ message: error.message });
   }
 });
+
+// Route to add food item
+router.post("/food", authenticateToken, async (req, res) => {
+  try {
+    const { foodname, foodcalorie, foodprotein, foodsugar, foodfat } = req.body;
+
+    // Create new food item
+    const newFood = new Food({
+      foodname,
+      foodcalorie,
+      foodprotein,
+      foodsugar,
+      foodfat,
+    });
+    await newFood.save();
+
+    // Add food item to the user's foods array
+    const userId = req.user.id;
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { foods: newFood._id } },
+      { new: true, runValidators: true }
+    );
+
+    // Find the updated user and populate the foods field
+    const updatedUser = await User.findById(userId).populate("foods");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Food item added successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 // Logout route
 router.post("/logout", (req, res) => {

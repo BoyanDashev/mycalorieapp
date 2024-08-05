@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-
+// Define the user schema
 const userSchema = new Schema(
   {
     username: {
@@ -34,15 +34,16 @@ const userSchema = new Schema(
       min: 0,
       default: 2000,
     },
+    foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }], // Reference to Food schema
   },
   {
     timestamps: true,
   }
 );
+
 // трябва да може да се направи, такаче да има две схеми и едната да се приема като масив в другата например
 // const userSchema = new Schema({
 // foods: [FoodsSchema]});
-
 
 userSchema.pre("save", async function (next) {
   try {
