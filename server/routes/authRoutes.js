@@ -88,6 +88,35 @@ router.get("/profile", authenticateToken, async (req, res) => {
   }
 });
 
+router.put("/mainpage", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const { calorie } = req.body;
+    if (!calorie) {
+      return res
+        .status(400)
+        .json({ message: "There is an error with the input." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { calorie },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+})
+
 
 // Route to get user details with populated foods
 router.get("/mainpage", authenticateToken, async (req, res) => {
@@ -99,9 +128,10 @@ router.get("/mainpage", authenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ message: "This is a protected route", user });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching profile:", error); // Log the error details
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -134,10 +164,15 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// Route to add food item
+
 router.post("/food", authenticateToken, async (req, res) => {
   try {
+    // Destructure and validate input fields
     const { foodname, foodcalorie, foodprotein, foodsugar, foodfat } = req.body;
+
+    if (!foodname || !foodcalorie || !foodprotein || !foodsugar || !foodfat) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
 
     // Create new food item
     const newFood = new Food({
@@ -147,30 +182,31 @@ router.post("/food", authenticateToken, async (req, res) => {
       foodsugar,
       foodfat,
     });
+
     await newFood.save();
 
     // Add food item to the user's foods array
     const userId = req.user.id;
-    await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $push: { foods: newFood._id } },
-      { new: true, runValidators: true }
-    );
-
-    // Find the updated user and populate the foods field
-    const updatedUser = await User.findById(userId).populate("foods");
+      { new: true, runValidators: true } // Ensure the update is validated
+    ).populate("foods");
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Food item added successfully", user: updatedUser });
+    res.status(200).json({
+      message: "Food item added successfully",
+      user: updatedUser,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error adding food item:", error); // Log the error details
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 // Logout route

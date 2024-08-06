@@ -14,7 +14,8 @@ const MainPage = () => {
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false); // State to control modal visibility
   const [modalPlacement, setModalPlacement] = useState("center");
-  const [otherinformation, setOtherInformation] = useState(null);
+  const [foodinformation, setFoodInformation] = useState("");
+  const [personalCalories, setPersonalCalories] = useState("")
 
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -23,10 +24,12 @@ const MainPage = () => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/profile", 
+            "http://localhost:3000/api/mainpage", 
             { withCredentials: true }
           );
           setProfile(response.data);
+          setFoodInformation(response.data);
+          setPersonalCalories(response.data);
           setError(null);
         } catch (err) {
           console.error(err);
@@ -51,7 +54,7 @@ const MainPage = () => {
         { calorie: calorieValue },
         { withCredentials: true }
       );
-      setProfile(response.data.user);
+      setPersonalCalories(response.data.user);
       setError(null);
     } catch (error) {
       console.error(error);
@@ -73,7 +76,7 @@ const MainPage = () => {
         },
         { withCredentials: true }
       );
-      setOtherInformation(response.data); // Update with new food information
+      setFoodInformation(response.data.user); // Update with new food information
       setError(null);
       setOpenModal(false); // Close modal on successful submit
     } catch (error) {
@@ -85,9 +88,12 @@ const MainPage = () => {
   return (
     <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
       <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
-        <h1>Calorie Remaining</h1>
-        <p>2890 - 200 = 2690: Your Calorie Goal edit here:</p>
-        <form onSubmit={handleCalorieSubmit}>
+        <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+          {profile
+            ? `Todays Calorie goal : ${personalCalories.calorie || "N/A"}`
+            : "User is not authenticated"}
+        </div>
+        <form className="flex " onSubmit={handleCalorieSubmit}>
           <input
             type="number"
             onChange={(e) => setCalories(e.target.value)}
@@ -97,18 +103,11 @@ const MainPage = () => {
           />
           <button
             type="submit"
-            className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="w-md mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
             Edit
           </button>
         </form>
-
-        <button
-          onClick={() => setOpenModal(true)}
-          className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          Add Food
-        </button>
 
         {/* Modal Implementation */}
         <Modal
@@ -219,19 +218,60 @@ const MainPage = () => {
           </Modal.Footer>
         </Modal>
 
-        <div className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          {profile
-            ? `Calories Left: ${profile.calorie || "N/A"}`
-            : "User is not authenticated"}
+        <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+          {profile ? (
+            <>
+              {personalCalories && personalCalories.calorie ? (
+                <>
+                  <ul>
+                    {foodinformation.foods &&
+                    foodinformation.foods.length > 0 ? (
+                      <>
+                       
+                        <p>
+                          Total Food Calories:{" "}
+                          {foodinformation.foods.reduce(
+                            (total, food) => total + food.foodcalorie,
+                            0
+                          )}
+                        </p>
+                        <p>
+                          Calories Left:{" "}
+                          {personalCalories.calorie -
+                            foodinformation.foods.reduce(
+                              (total, food) => total + food.foodcalorie,
+                              0
+                            )}
+                        </p>
+                      </>
+                    ) : (
+                      <p>No food items found</p>
+                    )}
+                  </ul>
+                </>
+              ) : (
+                <p>Personal calorie information is missing</p>
+              )}
+            </>
+          ) : (
+            <p>User is not authenticated</p>
+          )}
         </div>
+
+        <button
+          onClick={() => setOpenModal(true)}
+          className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Add Food
+        </button>
 
         <p>Goal - Food = Remaining</p>
         <h2>Today's Day</h2>
         <div>
-          {profile && profile.foods ? (
+          {foodinformation && foodinformation.foods ? (
             <ul>
-              {profile.foods.length > 0 ? (
-                profile.foods.map((food) => (
+              {foodinformation.foods.length > 0 ? (
+                foodinformation.foods.map((food) => (
                   <li key={food._id}>
                     {food.foodname} - {food.foodcalorie} calories
                   </li>
@@ -258,33 +298,9 @@ const MainPage = () => {
 
         {/* Display recently added food information */}
         <div className="mt-4">
-          {otherinformation && otherinformation.user ? (
-            <>
-              <h3>Recently Added Food</h3>
-              <p>
-                <strong>Food Name:</strong>{" "}
-                {otherinformation.user.foods.slice(-1)[0]?.foodname || "N/A"}
-              </p>
-              <p>
-                <strong>Food Calories:</strong>{" "}
-                {otherinformation.user.foods.slice(-1)[0]?.foodcalorie || "N/A"}
-              </p>
-              <p>
-                <strong>Food Protein:</strong>{" "}
-                {otherinformation.user.foods.slice(-1)[0]?.foodprotein || "N/A"}
-              </p>
-              <p>
-                <strong>Food Sugar:</strong>{" "}
-                {otherinformation.user.foods.slice(-1)[0]?.foodsugar || "N/A"}
-              </p>
-              <p>
-                <strong>Food Fat:</strong>{" "}
-                {otherinformation.user.foods.slice(-1)[0]?.foodfat || "N/A"}
-              </p>
-            </>
-          ) : (
-            <p>No food information available</p>
-          )}
+          <p>
+            <strong>FooodInformation:</strong> {}
+          </p>
         </div>
 
         {error && <p className="text-red-500">{error}</p>}
