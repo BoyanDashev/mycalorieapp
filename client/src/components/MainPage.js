@@ -12,7 +12,11 @@ const MainPage = () => {
   const [foodnames, setFoodName] = useState("");
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  
   const [openModal, setOpenModal] = useState(false); // State to control modal visibility
+  const [openOtherModal, setOtherModal] = useState(false);
   const [modalPlacement, setModalPlacement] = useState("center");
   const [foodinformation, setFoodInformation] = useState("");
   const [personalCalories, setPersonalCalories] = useState("")
@@ -85,9 +89,34 @@ const MainPage = () => {
     }
   };
 
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/search/", {
+        params: { query },
+      });
+      setResults(response.data);
+      setError("");
+    } catch (err) {
+      console.error("Search error:", err);
+      setError("Failed to fetch search results.");
+    }
+  };
+
   return (
     <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
       <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
+        {/* Display username */}
+        <div className="mt-4">
+          {profile && profile.username ? (
+            <p>
+              <strong>Welcome:</strong> {profile.username}
+            </p>
+          ) : (
+            <p>User is not authenticated</p>
+          )}
+        </div>
+        <h2>Here sthould be Today's Day</h2>
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
           {profile
             ? `Todays Calorie goal : ${personalCalories.calorie || "N/A"}`
@@ -105,10 +134,9 @@ const MainPage = () => {
             type="submit"
             className="w-md mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
-            Edit
+            Edit your calorie goal.
           </button>
         </form>
-
         {/* Modal Implementation */}
         <Modal
           show={openModal}
@@ -218,6 +246,57 @@ const MainPage = () => {
           </Modal.Footer>
         </Modal>
 
+        <Modal
+          show={openOtherModal}
+          onClose={() => setOtherModal(false)}
+          position={openOtherModal}
+        >
+          <Modal.Header>Search already existing Food Item</Modal.Header>
+          <Modal.Body>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Use this form to search for an Food Item.
+            </p>
+            <div className="flex max-w-md flex-col gap-4">
+              
+              <div className="mb-2 block">
+                <Label htmlFor="food-search" color="failure" value="Food Search" />
+              </div>
+              <TextInput
+                id="food-search"
+                placeholder="Search food name."
+                required
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                color="failure"
+              />
+            </div>
+            <Button
+              onClick={handleSearch}
+              type="submit"
+              className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              Search Food.
+            </Button>
+            {error && <p>{error}</p>}
+            {results.length > 0 && (
+              <ul>
+                {results.map((food) => (
+                  <li key={food._id}>
+                    {food.foodname} - {food.foodcalorie} calories
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              onClick={() => setOtherModal(false)}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
           {profile ? (
             <>
@@ -227,7 +306,6 @@ const MainPage = () => {
                     {foodinformation.foods &&
                     foodinformation.foods.length > 0 ? (
                       <>
-                       
                         <p>
                           Total Food Calories:{" "}
                           {foodinformation.foods.reduce(
@@ -257,23 +335,31 @@ const MainPage = () => {
             <p>User is not authenticated</p>
           )}
         </div>
-
         <button
           onClick={() => setOpenModal(true)}
           className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Add Food
+          Add Food.
         </button>
-
-        <p>Goal - Food = Remaining</p>
-        <h2>Today's Day</h2>
-        <div>
+        <button
+          onClick={() => setOtherModal(true)}
+          className="w-md mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Search Foods.
+        </button>
+        {/* FOOD INFORMATION ALL */}
+        <div className="mt-4">
+          <p>
+            <strong>Food Information:</strong>
+          </p>
           {foodinformation && foodinformation.foods ? (
             <ul>
               {foodinformation.foods.length > 0 ? (
                 foodinformation.foods.map((food) => (
                   <li key={food._id}>
-                    {food.foodname} - {food.foodcalorie} calories
+                    {food.foodname} - {food.calorie} calories ,
+                    {food.foodprotein} proteins , {food.foodsugar} sugars,{" "}
+                    {food.foodfat} fats.
                   </li>
                 ))
               ) : (
@@ -281,28 +367,55 @@ const MainPage = () => {
               )}
             </ul>
           ) : (
-            <p>User is not authenticated or no foods found</p>
+            <p>No food items found</p>
           )}
         </div>
 
-        {/* Display username */}
-        <div className="mt-4">
-          {profile && profile.username ? (
-            <p>
-              <strong>Username:</strong> {profile.username}
-            </p>
+        {/* All user macros. */}
+        <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+          {profile ? (
+            <>
+              {personalCalories && personalCalories.calorie ? (
+                <>
+                  <ul>
+                    {foodinformation.foods &&
+                    foodinformation.foods.length > 0 ? (
+                      <>
+                        <p>
+                          Total Food proteins:{" "}
+                          {foodinformation.foods.reduce(
+                            (total, food) => total + food.foodprotein,
+                            0
+                          )}
+                        </p>
+                        <p>
+                          Total Food fats:{" "}
+                          {foodinformation.foods.reduce(
+                            (total, food) => total + food.foodfat,
+                            0
+                          )}
+                        </p>
+                        <p>
+                          Total Food sugars:{" "}
+                          {foodinformation.foods.reduce(
+                            (total, food) => total + food.foodsugar,
+                            0
+                          )}
+                        </p>
+                      </>
+                    ) : (
+                      <p>No food items found</p>
+                    )}
+                  </ul>
+                </>
+              ) : (
+                <p>Personal calorie information is missing</p>
+              )}
+            </>
           ) : (
             <p>User is not authenticated</p>
           )}
         </div>
-
-        {/* Display recently added food information */}
-        <div className="mt-4">
-          <p>
-            <strong>FooodInformation:</strong> {}
-          </p>
-        </div>
-
         {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>

@@ -207,6 +207,31 @@ router.post("/food", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/search",  async (req, res) => {
+  try {
+    const { query } = req.query; // Get search query from request
+    if (!query) {
+      return res.status(400).json({ message: "Query parameter is required" });
+    }
+
+    // Perform search
+    const foods = await Food.find({
+      $or: [
+        { foodname: { $regex: query, $options: "i" } }, // Case-insensitive search
+        // { foodcalorie: query },
+        // { foodprotein: query },
+        // { foodsugar: query },
+        // { foodfat: query },
+      ],
+    });
+
+    res.status(200).json(foods);
+  } catch (error) {
+    console.error("Error during search:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 // Logout route
