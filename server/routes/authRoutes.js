@@ -69,21 +69,25 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Protected route example - Fetch user profile with populated foods
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId) // Populate foods
+
+    // Fetch the user details by ID
+    const user = await User.findById(userId).select('name height weight'); // Select only specific fields
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Send the user data as response
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching profile:", error); // Log the error details
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // Route to get user details with populated foods
 router.get("/mainpage", authenticateToken, async (req, res) => {

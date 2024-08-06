@@ -23,7 +23,7 @@ const MainPage = () => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/profile", // Ensure endpoint is correct
+            "http://localhost:3000/api/profile", 
             { withCredentials: true }
           );
           setProfile(response.data);

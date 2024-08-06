@@ -16,13 +16,12 @@ function Profile() {
         try {
           const response = await axios.get(
             "http://localhost:3000/api/profile/",
-            {
-              withCredentials: true, // Include cookies for authentication
-            }
+            { withCredentials: true } // Include cookies for authentication
           );
-          setProfile(response.data.user); // Set entire user object
+          setProfile(response.data); // Adjust based on your server response
           setError(null); // Clear error if data is fetched successfully
         } catch (err) {
+          console.error(err); // Log error details for debugging
           setError("Failed to fetch profile data.");
           setProfile(null); // Clear profile data if there's an error
         }
@@ -47,7 +46,7 @@ function Profile() {
       setProfile(response.data.user); // Adjust based on your server response structure
       setError(null);
     } catch (error) {
-      setError("Failed to edit the profile");
+      setError("Failed to edit the profile, please provide full information");
     }
   };
 
@@ -73,7 +72,6 @@ function Profile() {
             placeholder="Edit your first name."
             className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           />
-
           <input
             type="number"
             onChange={(e) => setWeight(e.target.value)}
@@ -81,7 +79,6 @@ function Profile() {
             placeholder="Edit or input your weight in kg."
             className="shadow-sm mt-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           />
-
           <input
             type="number"
             onChange={(e) => setHeight(e.target.value)}
@@ -116,7 +113,7 @@ function Profile() {
               </p>
             </div>
           ) : (
-            <p>Loading...</p>
+            <p>Please provide information.</p>
           )}
         </div>
       </div>
