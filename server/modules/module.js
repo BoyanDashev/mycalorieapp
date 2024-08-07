@@ -34,7 +34,6 @@ const userSchema = new Schema(
       min: 0,
       default: 2000,
     },
-    foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }], // Reference to Food schema
   },
   {
     timestamps: true,

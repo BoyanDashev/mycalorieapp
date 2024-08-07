@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/authContext";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
+import FoodHistory from "./FoodHistory";
+
 
 const MainPage = () => {
   const [calories, setCalories] = useState("");
@@ -11,15 +13,23 @@ const MainPage = () => {
   const [foodfats, setFoodFats] = useState("");
   const [foodnames, setFoodName] = useState("");
   const [profile, setProfile] = useState(null);
+
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  
+
   const [openModal, setOpenModal] = useState(false); // State to control modal visibility
   const [openOtherModal, setOtherModal] = useState(false);
   const [modalPlacement, setModalPlacement] = useState("center");
   const [foodinformation, setFoodInformation] = useState("");
-  const [personalCalories, setPersonalCalories] = useState("")
+  const [personalCalories, setPersonalCalories] = useState("");
+
+
+  const [foodQuantity, setFoodQuantity] = useState("");
+  const [logError, setLogError] = useState("");
+  const [logSuccess, setLogSuccess] = useState(false);
+
+  
 
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -28,7 +38,7 @@ const MainPage = () => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/mainpage", 
+            "http://localhost:3000/api/mainpage",
             { withCredentials: true }
           );
           setProfile(response.data);
@@ -68,8 +78,29 @@ const MainPage = () => {
 
   const handleFoodSubmit = async (e) => {
     e.preventDefault();
+
+    if (
+      !foodnames ||
+      !foodcalories ||
+      !foodproteins ||
+      !foodsugars ||
+      !foodfats
+    ) {
+      setError("Please fill in all fields.");
+      return; 
+    }
+
+    if (!profile || !profile._id) {
+      setError("User profile is not available.");
+      return;
+    }
+
+    setError(null);
+    setLogSuccess(false);
+
     try {
-      const response = await axios.post(
+      // Step 1: Add Food Information
+      const foodResponse = await axios.post(
         "http://localhost:3000/api/food/",
         {
           foodname: foodnames,
@@ -80,16 +111,33 @@ const MainPage = () => {
         },
         { withCredentials: true }
       );
-      setFoodInformation(response.data.user); // Update with new food information
-      setError(null);
+
+      // Step 2: Log Food Consumption
+      const userId = profile._id; // Use the user ID from the profile
+       // Replace this with the actual quantity if needed
+
+      const consumptionResponse = await axios.post(
+        "http://localhost:3000/api/food-consumption/",
+        {
+          foodId: foodResponse.data.food._id, // Assuming the response contains the new food's ID
+          quantity: foodQuantity,
+          userId: userId,
+        },
+        { withCredentials: true }
+      );
+
+      // Update state with the new food information
+      setFoodInformation(consumptionResponse.data.food);
+      setLogSuccess(true);
       setOpenModal(false); // Close modal on successful submit
     } catch (error) {
       console.error(error);
-      setError("Failed to add food information.");
+      setError("Failed to add food information and log consumption.");
     }
   };
 
-
+  //да сметна калориите на храните за днес -  и да извадя от общите калории.
+  
   const handleSearch = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/search/", {
@@ -103,6 +151,7 @@ const MainPage = () => {
     }
   };
 
+ 
   return (
     <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
       <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
@@ -116,10 +165,10 @@ const MainPage = () => {
             <p>User is not authenticated</p>
           )}
         </div>
-        <h2>Here sthould be Today's Day</h2>
+        <h2>Here should be Today's Day</h2>
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
           {profile
-            ? `Todays Calorie goal : ${personalCalories.calorie || "N/A"}`
+            ? `Today's Calorie goal: ${personalCalories.calorie || "N/A"}`
             : "User is not authenticated"}
         </div>
         <form className="flex " onSubmit={handleCalorieSubmit}>
@@ -137,6 +186,16 @@ const MainPage = () => {
             Edit your calorie goal.
           </button>
         </form>
+
+        
+          {logError && <p className="text-red-500">{logError}</p>}
+          {logSuccess && (
+            <p className="text-green-500">
+              Food consumption logged successfully!
+            </p>
+          )}
+        
+
         {/* Modal Implementation */}
         <Modal
           show={openModal}
@@ -227,6 +286,19 @@ const MainPage = () => {
                     color="failure"
                   />
                 </div>
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="food-quantity" color="failure" value="Quantity" />
+                  </div>
+                  <TextInput
+                    id="food-quantity"
+                    placeholder="Enter servings"
+                    required
+                    value={foodQuantity}
+                    onChange={(e) => setFoodQuantity(e.target.value)}
+                    color="failure"
+                  />
+                </div>
               </div>
               <Button
                 type="submit"
@@ -254,12 +326,15 @@ const MainPage = () => {
           <Modal.Header>Search already existing Food Item</Modal.Header>
           <Modal.Body>
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              Use this form to search for an Food Item.
+              Use this form to search for a Food Item.
             </p>
             <div className="flex max-w-md flex-col gap-4">
-              
               <div className="mb-2 block">
-                <Label htmlFor="food-search" color="failure" value="Food Search" />
+                <Label
+                  htmlFor="food-search"
+                  color="failure"
+                  value="Food Search"
+                />
               </div>
               <TextInput
                 id="food-search"
@@ -298,7 +373,7 @@ const MainPage = () => {
           </Modal.Footer>
         </Modal>
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          {profile ? (
+          {/* {profile ? (
             <>
               {personalCalories && personalCalories.calorie ? (
                 <>
@@ -333,7 +408,7 @@ const MainPage = () => {
             </>
           ) : (
             <p>User is not authenticated</p>
-          )}
+          )} */}
         </div>
         <button
           onClick={() => setOpenModal(true)}
@@ -357,8 +432,8 @@ const MainPage = () => {
               {foodinformation.foods.length > 0 ? (
                 foodinformation.foods.map((food) => (
                   <li key={food._id}>
-                    {food.foodname} - {food.calorie} calories ,
-                    {food.foodprotein} proteins , {food.foodsugar} sugars,{" "}
+                    {food.foodname} - {food.calorie} calories,
+                    {food.foodprotein} proteins, {food.foodsugar} sugars,
                     {food.foodfat} fats.
                   </li>
                 ))
@@ -370,10 +445,11 @@ const MainPage = () => {
             <p>No food items found</p>
           )}
         </div>
+        <FoodHistory/>
 
         {/* All user macros. */}
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          {profile ? (
+          {/* {profile ? (
             <>
               {personalCalories && personalCalories.calorie ? (
                 <>
@@ -414,7 +490,7 @@ const MainPage = () => {
             </>
           ) : (
             <p>User is not authenticated</p>
-          )}
+          )} */}
         </div>
         {error && <p className="text-red-500">{error}</p>}
       </div>

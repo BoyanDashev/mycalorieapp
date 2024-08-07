@@ -1,9 +1,12 @@
-const router = require("express").Router();
-const User = require("../modules/module.js");
-const Food = require("../modules/foodModule.js");
+const express = require("express");
+const router = express.Router();
+const User = require("../modules/module");
+const Food = require("../modules/foodModule");
+const FoodConsumption = require("../modules/foodConsumption");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const { getUserFoodHistory } = require("../services/foodServices"); // Import the service function
 
 dotenv.config();
 
@@ -74,7 +77,7 @@ router.get("/profile", authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
     // Fetch the user details by ID
-    const user = await User.findById(userId).select('name height weight'); // Select only specific fields
+    const user = await User.findById(userId).select("name height weight"); // Select only specific fields
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -91,7 +94,7 @@ router.get("/profile", authenticateToken, async (req, res) => {
 router.put("/mainpage", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     const { calorie } = req.body;
     if (!calorie) {
       return res
@@ -115,14 +118,13 @@ router.put("/mainpage", authenticateToken, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-})
-
+});
 
 // Route to get user details with populated foods
 router.get("/mainpage", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).populate("foods"); // Populate foods
+    const user = await User.findById(userId); // Populate foods
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -164,6 +166,7 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
+// tuka трябва да стане такаче да взима от усер консумпион датабазата а не от усер фоодс релацията.
 
 router.post("/food", authenticateToken, async (req, res) => {
   try {
@@ -185,21 +188,9 @@ router.post("/food", authenticateToken, async (req, res) => {
 
     await newFood.save();
 
-    // Add food item to the user's foods array
-    const userId = req.user.id;
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $push: { foods: newFood._id } },
-      { new: true, runValidators: true } // Ensure the update is validated
-    ).populate("foods");
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({
+    res.status(201).json({
       message: "Food item added successfully",
-      user: updatedUser,
+      food: newFood,
     });
   } catch (error) {
     console.error("Error adding food item:", error); // Log the error details
@@ -207,7 +198,7 @@ router.post("/food", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/search",  async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     const { query } = req.query; // Get search query from request
     if (!query) {
@@ -216,13 +207,7 @@ router.get("/search",  async (req, res) => {
 
     // Perform search
     const foods = await Food.find({
-      $or: [
-        { foodname: { $regex: query, $options: "i" } }, // Case-insensitive search
-        // { foodcalorie: query },
-        // { foodprotein: query },
-        // { foodsugar: query },
-        // { foodfat: query },
-      ],
+      foodname: { $regex: query, $options: "i" }, // Case-insensitive search
     });
 
     res.status(200).json(foods);
@@ -232,6 +217,43 @@ router.get("/search",  async (req, res) => {
   }
 });
 
+router.post("/food-consumption", authenticateToken, async (req, res) => {
+  const { foodId, date, quantity } = req.body;
+  const userId = req.user.id; // Get userId from the authenticated user
+
+  try {
+    const foodConsumption = new FoodConsumption({
+      userId,
+      foodId,
+      date,
+      quantity,
+    });
+    await foodConsumption.save();
+    res.status(201).send(foodConsumption);
+  } catch (error) {
+    res.status(400).send({ error: "Unable to log food consumption" });
+  }
+});
+
+
+// Fetch food consumption history for the authenticated user
+router.get("/food-consumption", authenticateToken, async (req, res) => {
+  const userId = req.user.id; // Get userId from the authenticated user
+
+  try {
+    // Calculate start and end of today
+    const now = new Date();
+    const startOfDay = new Date(now.setHours(0, 0, 0, 0)); // Start of today (midnight)
+    const endOfDay = new Date(now.setHours(23, 59, 59, 999)); // End of today (just before midnight)
+
+    // Fetch food consumption data for today
+    const foodHistory = await getUserFoodHistory(userId, startOfDay, endOfDay); // Pass dates to service function
+
+    res.json(foodHistory);
+  } catch (error) {
+    res.status(400).json({ error: "Unable to fetch food consumption history" });
+  }
+});
 
 
 // Logout route

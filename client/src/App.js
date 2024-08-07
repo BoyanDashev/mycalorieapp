@@ -9,6 +9,7 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import ProtectedRoute from "./components/Protectedroutes";
 import MainPage from "./components/MainPage";
+import FoodHistory from "./components/FoodHistory";
 
 function App() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -223,6 +224,7 @@ function App() {
       <Routes>
         <Route path="/api/profile" element={<Profile />} />
         <Route path="/api/mainpage" element={<MainPage />} />
+        <Route path="/api/foodhistory" element={<FoodHistory/>} />
 
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />
