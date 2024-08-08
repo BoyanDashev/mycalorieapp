@@ -56,7 +56,7 @@ function Profile() {
   };
 
   return (
-    <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
+    <div className="flex items-start justify-center h-screen bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
       <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 font-sans">
           Welcome to your profile.

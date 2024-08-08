@@ -139,8 +139,8 @@ const MainPage = () => {
   };
 
   return (
-    <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
-      <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
+    <div className="flex items-start justify-center bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
+      <div className="text-center mb-4 mt-4 p-6 bg-white rounded-lg shadow-lg">
         {/* Display username */}
         <div className="mt-4">
           {profile && profile.username ? (

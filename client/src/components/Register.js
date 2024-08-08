@@ -69,8 +69,8 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-sky-500 h-screen w-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full mt-12">
+    <div className="bg-sky-500 flex items-center justify-center">
+      <div className="bg-white mb-4 p-8 rounded-lg shadow-lg max-w-md w-full mt-12">
         {success ? (
           <section>
             <h1 className="text-2xl font-bold">Registration Successful!</h1>
