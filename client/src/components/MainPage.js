@@ -23,6 +23,7 @@ const MainPage = () => {
   const [foodQuantity, setFoodQuantity] = useState("");
   const [logError, setLogError] = useState("");
   const [logSuccess, setLogSuccess] = useState(false);
+  const [foodHistory, setFoodHistory] = useState([]);
 
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -37,6 +38,7 @@ const MainPage = () => {
           setProfile(response.data);
           setFoodInformation(response.data);
           setPersonalCalories(response.data);
+          fetchFoodHistory();
           setError(null);
         } catch (err) {
           console.error(err);
@@ -61,6 +63,7 @@ const MainPage = () => {
         { calorie: calorieValue },
         { withCredentials: true }
       );
+      fetchFoodHistory(); // to calculate the calories from the user
       setPersonalCalories(response.data.user);
       setError(null);
     } catch (error) {
@@ -116,6 +119,7 @@ const MainPage = () => {
         { withCredentials: true }
       );
 
+      fetchFoodHistory();
       setFoodInformation(consumptionResponse.data.food);
       setLogSuccess(true);
       setOpenModal(false);
@@ -124,6 +128,20 @@ const MainPage = () => {
       setError("Failed to add food information and log consumption.");
     }
   };
+  const fetchFoodHistory = async () => {
+    try {
+       const getComsunption = await axios.get(
+        "http://localhost:3000/api/food-consumption/",
+        { withCredentials: true }
+      );
+      setFoodHistory(getComsunption.data)
+      setError("")
+      
+    } catch (err) {
+      console.error("Error Fetching the Foods");
+      setError("Failed to Fetch Users Foods.")
+    }
+}
 
   const handleSearch = async () => {
     try {
@@ -361,7 +379,11 @@ const MainPage = () => {
         </Modal>
 
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          <FoodHistory />
+          <FoodHistory
+            profile={profile}
+            foodHistory={foodHistory}
+            personalCalories
+         ={personalCalories} />
         </div>
 
         <button
