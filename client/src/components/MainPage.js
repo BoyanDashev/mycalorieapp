@@ -4,7 +4,6 @@ import { AuthContext } from "../context/authContext";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 import FoodHistory from "./FoodHistory";
 
-
 const MainPage = () => {
   const [calories, setCalories] = useState("");
   const [foodcalories, setFoodCalories] = useState("");
@@ -13,23 +12,17 @@ const MainPage = () => {
   const [foodfats, setFoodFats] = useState("");
   const [foodnames, setFoodName] = useState("");
   const [profile, setProfile] = useState(null);
-
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-
-  const [openModal, setOpenModal] = useState(false); // State to control modal visibility
+  const [openModal, setOpenModal] = useState(false);
   const [openOtherModal, setOtherModal] = useState(false);
   const [modalPlacement, setModalPlacement] = useState("center");
   const [foodinformation, setFoodInformation] = useState("");
   const [personalCalories, setPersonalCalories] = useState("");
-
-
   const [foodQuantity, setFoodQuantity] = useState("");
   const [logError, setLogError] = useState("");
   const [logSuccess, setLogSuccess] = useState(false);
-
-  
 
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -87,7 +80,7 @@ const MainPage = () => {
       !foodfats
     ) {
       setError("Please fill in all fields.");
-      return; 
+      return;
     }
 
     if (!profile || !profile._id) {
@@ -99,7 +92,6 @@ const MainPage = () => {
     setLogSuccess(false);
 
     try {
-      // Step 1: Add Food Information
       const foodResponse = await axios.post(
         "http://localhost:3000/api/food/",
         {
@@ -112,32 +104,27 @@ const MainPage = () => {
         { withCredentials: true }
       );
 
-      // Step 2: Log Food Consumption
-      const userId = profile._id; // Use the user ID from the profile
-       // Replace this with the actual quantity if needed
+      const userId = profile._id;
 
       const consumptionResponse = await axios.post(
         "http://localhost:3000/api/food-consumption/",
         {
-          foodId: foodResponse.data.food._id, // Assuming the response contains the new food's ID
+          foodId: foodResponse.data.food._id,
           quantity: foodQuantity,
           userId: userId,
         },
         { withCredentials: true }
       );
 
-      // Update state with the new food information
       setFoodInformation(consumptionResponse.data.food);
       setLogSuccess(true);
-      setOpenModal(false); // Close modal on successful submit
+      setOpenModal(false);
     } catch (error) {
       console.error(error);
       setError("Failed to add food information and log consumption.");
     }
   };
 
-  //да сметна калориите на храните за днес -  и да извадя от общите калории.
-  
   const handleSearch = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/search/", {
@@ -151,7 +138,6 @@ const MainPage = () => {
     }
   };
 
- 
   return (
     <div className="flex items-start justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
       <div className="text-center mt-4 p-6 bg-white rounded-lg shadow-lg">
@@ -187,16 +173,13 @@ const MainPage = () => {
           </button>
         </form>
 
-        
-          {logError && <p className="text-red-500">{logError}</p>}
-          {logSuccess && (
-            <p className="text-green-500">
-              Food consumption logged successfully!
-            </p>
-          )}
-        
+        {logError && <p className="text-red-500">{logError}</p>}
+        {logSuccess && (
+          <p className="text-green-500">
+            Food consumption logged successfully!
+          </p>
+        )}
 
-        {/* Modal Implementation */}
         <Modal
           show={openModal}
           onClose={() => setOpenModal(false)}
@@ -288,7 +271,11 @@ const MainPage = () => {
                 </div>
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="food-quantity" color="failure" value="Quantity" />
+                    <Label
+                      htmlFor="food-quantity"
+                      color="failure"
+                      value="Quantity"
+                    />
                   </div>
                   <TextInput
                     id="food-quantity"
@@ -372,44 +359,11 @@ const MainPage = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          {/* {profile ? (
-            <>
-              {personalCalories && personalCalories.calorie ? (
-                <>
-                  <ul>
-                    {foodinformation.foods &&
-                    foodinformation.foods.length > 0 ? (
-                      <>
-                        <p>
-                          Total Food Calories:{" "}
-                          {foodinformation.foods.reduce(
-                            (total, food) => total + food.foodcalorie,
-                            0
-                          )}
-                        </p>
-                        <p>
-                          Calories Left:{" "}
-                          {personalCalories.calorie -
-                            foodinformation.foods.reduce(
-                              (total, food) => total + food.foodcalorie,
-                              0
-                            )}
-                        </p>
-                      </>
-                    ) : (
-                      <p>No food items found</p>
-                    )}
-                  </ul>
-                </>
-              ) : (
-                <p>Personal calorie information is missing</p>
-              )}
-            </>
-          ) : (
-            <p>User is not authenticated</p>
-          )} */}
+          <FoodHistory />
         </div>
+
         <button
           onClick={() => setOpenModal(true)}
           className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -422,76 +376,7 @@ const MainPage = () => {
         >
           Search Foods.
         </button>
-        {/* FOOD INFORMATION ALL */}
-        <div className="mt-4">
-          <p>
-            <strong>Food Information:</strong>
-          </p>
-          {foodinformation && foodinformation.foods ? (
-            <ul>
-              {foodinformation.foods.length > 0 ? (
-                foodinformation.foods.map((food) => (
-                  <li key={food._id}>
-                    {food.foodname} - {food.calorie} calories,
-                    {food.foodprotein} proteins, {food.foodsugar} sugars,
-                    {food.foodfat} fats.
-                  </li>
-                ))
-              ) : (
-                <li>No foods available</li>
-              )}
-            </ul>
-          ) : (
-            <p>No food items found</p>
-          )}
-        </div>
-        <FoodHistory/>
 
-        {/* All user macros. */}
-        <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          {/* {profile ? (
-            <>
-              {personalCalories && personalCalories.calorie ? (
-                <>
-                  <ul>
-                    {foodinformation.foods &&
-                    foodinformation.foods.length > 0 ? (
-                      <>
-                        <p>
-                          Total Food proteins:{" "}
-                          {foodinformation.foods.reduce(
-                            (total, food) => total + food.foodprotein,
-                            0
-                          )}
-                        </p>
-                        <p>
-                          Total Food fats:{" "}
-                          {foodinformation.foods.reduce(
-                            (total, food) => total + food.foodfat,
-                            0
-                          )}
-                        </p>
-                        <p>
-                          Total Food sugars:{" "}
-                          {foodinformation.foods.reduce(
-                            (total, food) => total + food.foodsugar,
-                            0
-                          )}
-                        </p>
-                      </>
-                    ) : (
-                      <p>No food items found</p>
-                    )}
-                  </ul>
-                </>
-              ) : (
-                <p>Personal calorie information is missing</p>
-              )}
-            </>
-          ) : (
-            <p>User is not authenticated</p>
-          )} */}
-        </div>
         {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>

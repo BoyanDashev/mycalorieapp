@@ -7,7 +7,6 @@ import NotFound from "./components/NotFound";
 import "./App.css";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
-import ProtectedRoute from "./components/Protectedroutes";
 import MainPage from "./components/MainPage";
 import FoodHistory from "./components/FoodHistory";
 
@@ -47,15 +46,13 @@ function App() {
       <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
-            to="/"
+            to="/home"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="h-8"
-              alt="Flowbite Logo"
-            />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            <span
+              className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+              
+            >
               My Calorie App
             </span>
           </Link>
@@ -92,7 +89,7 @@ function App() {
               <li>
                 <Link
                   to="/home"
-                  className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   aria-current="page"
                 >
                   Home
@@ -224,7 +221,7 @@ function App() {
       <Routes>
         <Route path="/api/profile" element={<Profile />} />
         <Route path="/api/mainpage" element={<MainPage />} />
-        <Route path="/api/foodhistory" element={<FoodHistory/>} />
+        <Route path="/api/foodhistory" element={<FoodHistory />} />
 
         <Route path="/api/login" element={<Login />} />
         <Route path="/api/register" element={<Register />} />

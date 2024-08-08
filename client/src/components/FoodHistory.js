@@ -54,6 +54,7 @@ function FoodHistory() {
     return <p>{error}</p>;
   }
 
+  let totalCalories = 0;
 
   return (
     <div>
@@ -77,13 +78,14 @@ function FoodHistory() {
           {/* Calculate and display total calories for all items */}
           <p>
             Total Calories Consumed:{" "}
-            {foodHistory.reduce((total, item) => {
+            { totalCalories =foodHistory.reduce((total, item) => {
               // Ensure item.foodId.foodcalorie is a number
               const caloriesPerServing =
                 parseFloat(item.foodId.foodcalorie) || 0;
               return total + item.quantity * caloriesPerServing;
             }, 0)}
           </p>
+          <p>Calories Left:{ profile.calorie - totalCalories }</p>
         </>
       ) : (
         <p>No food consumption history available.</p>
