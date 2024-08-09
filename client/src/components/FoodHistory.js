@@ -61,6 +61,7 @@ function FoodHistory({ profile, foodHistory, personalCalories }) {
           <p>Total Proteins Consumed: {totalProteins}</p>
           <p>Total Fats Consumed: {totalFats}</p>
           <p>Total Sugars Consumed: {totalSugars}</p>
+          <h2>The Food saving is renewed every 24 hours. So after 24 hours the Food History will be cleared.</h2>
         </>
       ) : (
         <p>No food consumption history available.</p>
