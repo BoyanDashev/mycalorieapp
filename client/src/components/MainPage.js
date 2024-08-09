@@ -5,7 +5,16 @@ import FoodHistory from "./FoodHistory";
 import AddFoodModal from "./AddFoodModal";
 import SearchFoodModal from "./SearchFoodModal";
 
+function getDate() {
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const date = today.getDate();
+  return `${month}/${date}/${year}`;
+}
+
 const MainPage = () => {
+  const [currentDate, setCurrentDate] = useState(getDate());
   const [calories, setCalories] = useState("");
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
@@ -91,7 +100,7 @@ const MainPage = () => {
             <p>User is not authenticated</p>
           )}
         </div>
-        <h2>Here should be Today's Day</h2>
+        <h2>Today's Date: {currentDate}</h2>
         <div className="shadow-sm mt-3 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
           {profile
             ? `Today's Calorie goal: ${personalCalories.calorie || "N/A"}`
