@@ -2,10 +2,41 @@ import React, { useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import axios from "axios";
 
-function SearchFoodModal({ openOtherModal, setOtherModal }) {
+function SearchFoodModal({
+  openOtherModal,
+  profile,
+  fetchFoodHistory,
+  setOtherModal,
+}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
+  const [foodQuantity, setFoodQuantity] = useState("");
+
+  const addFoodItem = async (foodId, foodQuantity) => {
+    try {
+      const userId = profile._id;
+
+      await axios.post(
+        "http://localhost:3000/api/food-consumption/",
+        {
+          foodId,
+          quantity: foodQuantity,
+          userId,
+        },
+        { withCredentials: true }
+      );
+
+      // Clear inputs and close the modal
+      fetchFoodHistory();
+      setFoodQuantity("");
+      setError("");
+      setOtherModal(false);
+    } catch (error) {
+      console.error("Error adding food item:", error);
+      setError("Failed to add food item.");
+    }
+  };
 
   const handleSearch = async () => {
     try {
@@ -24,7 +55,6 @@ function SearchFoodModal({ openOtherModal, setOtherModal }) {
     <div
       id="search-food-modal"
       tabIndex="-1"
-      aria-hidden="true"
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden ${
         openOtherModal ? "block" : "hidden"
       }`}
@@ -42,7 +72,6 @@ function SearchFoodModal({ openOtherModal, setOtherModal }) {
             >
               <svg
                 className="w-3 h-3"
-                
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 14 14"
@@ -64,11 +93,7 @@ function SearchFoodModal({ openOtherModal, setOtherModal }) {
             </p>
             <div className="flex flex-col gap-4 mb-4">
               <div className="mb-2 block">
-                <Label
-                  htmlFor="food-search"
-                  color="failure"
-                  value="Food Search"
-                />
+                <Label htmlFor="food-search" value="Food Search" />
               </div>
               <TextInput
                 id="food-search"
@@ -76,7 +101,6 @@ function SearchFoodModal({ openOtherModal, setOtherModal }) {
                 required
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                color="failure"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               />
             </div>
@@ -90,9 +114,47 @@ function SearchFoodModal({ openOtherModal, setOtherModal }) {
             {results.length > 0 && (
               <ul className="mt-4 space-y-2">
                 {results.map((food) => (
-                  <li key={food._id} className="flex justify-between">
+                  <li
+                    key={food._id}
+                    className="flex justify-between items-center"
+                  >
                     <span>{food.foodname}</span>
                     <span>{food.foodcalorie} calories</span>
+                    <div className="flex flex-col items-end">
+                      <div className="mb-2 block">
+                        <Label htmlFor="food-quantity" value="Quantity" />
+                      </div>
+                      <TextInput
+                        id="food-quantity"
+                        placeholder="Enter quantity"
+                        required
+                        type="number"
+                        value={foodQuantity}
+                        onChange={(e) => setFoodQuantity(e.target.value)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => addFoodItem(food._id, foodQuantity)}
+                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white mt-2"
+                      >
+                        <svg
+                          className="text-blue-500 w-7 h-7"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        <span className="sr-only">Add item</span>
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>

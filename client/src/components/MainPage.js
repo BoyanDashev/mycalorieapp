@@ -184,6 +184,8 @@ const MainPage = () => {
           <SearchFoodModal
             openOtherModal={openOtherModal}
             setOtherModal={setOtherModal}
+            profile={profile}
+            fetchFoodHistory={fetchFoodHistory}
           />
         </div>
 
