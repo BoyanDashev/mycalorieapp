@@ -14,11 +14,6 @@ function getDate() {
   return `${month}/${date}/${year}`;
 }
 
-// to remove a food from the food history i need to make a delete request to delete the specific item food.
-// But this means that i need to first find the specific object id and then remove it.
-// i need to make this in my foodHistory Componnent but the fr logic will be in my main component.
-//
-
 const MainPage = () => {
   const [currentDate, setCurrentDate] = useState(getDate());
   const [calories, setCalories] = useState("");
@@ -107,6 +102,24 @@ const MainPage = () => {
     
   };
 
+    const removeFoodItem = async (itemId) => {
+      try {
+        const response = await axios.delete(
+          `http://localhost:3000/api/food-consumption`,
+          {
+            data: { id: itemId }, // Send itemId in the request body
+            withCredentials: true,
+          }
+        );
+        fetchFoodHistory();
+      } catch (error) {
+        console.error(
+          "Error deleting food item:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
   return (
     <div className="flex items-start justify-center bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
       <div className="text-center mb-4 mt-4 p-6 bg-white rounded-lg shadow-lg">
@@ -166,6 +179,7 @@ const MainPage = () => {
             profile={profile}
             foodHistory={foodHistory}
             personalCalories={personalCalories}
+            removeFoodItem={removeFoodItem}
           />
           <SearchFoodModal
             openOtherModal={openOtherModal}

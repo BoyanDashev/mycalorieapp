@@ -235,6 +235,26 @@ router.post("/food-consumption", authenticateToken, async (req, res) => {
   }
 });
 
+router.delete("/food-consumption", authenticateToken, async (req, res) => {
+  const userId = req.user.id; // Assume this is populated by your authenticateToken middleware
+  const itemId = req.body.id; // ID of the food consumption entry to delete (from the request body)
+
+  try {
+    // Find and delete the specific food consumption entry for the authenticated user
+    const result = await FoodConsumption.deleteOne({
+      _id: itemId,
+      userId: userId,
+    });
+
+    res
+      .status(200)
+      .json({ message: "Food consumption entry deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Unable to delete food consumption entry" });
+  }
+});
+
+
 
 // Fetch food consumption history for the authenticated user
 router.get("/food-consumption", authenticateToken, async (req, res) => {
