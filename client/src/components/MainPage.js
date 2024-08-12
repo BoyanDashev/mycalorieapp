@@ -121,26 +121,36 @@ const MainPage = () => {
     };
 
   return (
-    <div className="flex items-start justify-center bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
-      <div className="text-center mb-4 mt-4 p-6 bg-white rounded-lg shadow-lg">
+    <div className="flex items-center justify-center bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
+      <div className="text-center w-full max-w-4xl mx-auto mt-6 mb-6 p-8 bg-white border border-gray-300 rounded-lg shadow-lg">
         {/* Display username */}
-        <div className="mt-4">
+        <div className="w-full p-8 bg-blue-50 border border-blue-300 rounded-lg shadow-lg">
           {profile && profile.username ? (
-            <p>
-              <strong>Welcome:</strong> {profile.username}
-            </p>
+            <div className="text-center">
+              <p className="text-3xl font-extrabold text-blue-700 mb-3">
+                Welcome,{" "}
+                <span className="text-blue-500">{profile.username}</span>!
+              </p>
+              <p className="text-lg text-gray-600">
+                We're glad to see you back. Check out your daily updates and
+                manage your food consumption.
+              </p>
+            </div>
           ) : (
-            <p>User is not authenticated</p>
+            <p className="text-center text-red-600 text-lg font-semibold">
+              User is not authenticated
+            </p>
           )}
         </div>
-        <h2>Today's Date: {currentDate}</h2>
+        <h2 className="text-xl font-bold mt-6 mb-4">
+          Today's Date: {currentDate}
+        </h2>
         <div className="bg-blue-500 mt-4 font-bold text-white rounded-lg shadow-lg hover:bg-blue-600 cursor-pointer">
           {profile ? (
             <>
               <div onDoubleClick={handleDoubleClick} className="p-6 ">
                 Your Personal Calories: {personalCalories.calorie}
               </div>
-
               <CalorieModal
                 open={isModalOpen}
                 onClose={handleCloseModal}
@@ -153,7 +163,7 @@ const MainPage = () => {
             "User is not authenticated"
           )}
         </div>
-        <p className="font-sans font-thin">
+        <p className="font-sans font-thin mt-4">
           Double Click to edit your Calories.
         </p>
 
@@ -193,13 +203,13 @@ const MainPage = () => {
           onClick={() => setOpenModal(true)}
           className="w-md mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Add Food.
+          Add Food
         </button>
         <button
           onClick={() => setOtherModal(true)}
           className="w-md mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Search Foods.
+          Search Foods
         </button>
 
         {error && <p className="text-red-500">{error}</p>}

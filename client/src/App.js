@@ -7,7 +7,6 @@ import NotFound from "./components/NotFound";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import MainPage from "./components/MainPage";
-import FoodHistory from "./components/FoodHistory";
 import "./App.css";
 
 function App() {
@@ -39,7 +38,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen  bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
         <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <Link
@@ -61,7 +60,6 @@ function App() {
               <span className="sr-only">Open main menu</span>
               <svg
                 className="w-5 h-5"
-                aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 17 14"
@@ -212,7 +210,6 @@ function App() {
         <Routes>
           <Route path="/api/profile" element={<Profile />} />
           <Route path="/api/mainpage" element={<MainPage />} />
-          <Route path="/api/foodhistory" element={<FoodHistory />} />
           <Route path="/api/login" element={<Login />} />
           <Route path="/api/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
