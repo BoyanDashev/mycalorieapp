@@ -7,7 +7,7 @@
     "start-fe": "cd client && react-scripts start",
     "start-be": "cd server && node server.js",
     "start-both": "concurrently \"npm run start-fe\" \"npm run start-be\"",
-    "build": "cd client && react-scripts build",
+    "build": "cd client && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
