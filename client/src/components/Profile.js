@@ -16,14 +16,14 @@ function Profile() {
         try {
           const response = await axios.get(
             "http://localhost:3000/api/profile/",
-            { withCredentials: true } // Include cookies for authentication
+            { withCredentials: true }
           );
-          setProfile(response.data); // Adjust based on your server response
-          setError(null); // Clear error if data is fetched successfully
+          setProfile(response.data);
+          setError(null);
         } catch (err) {
-          console.error(err); // Log error details for debugging
+          console.error(err);
           setError("Failed to fetch profile data.");
-          setProfile(null); // Clear profile data if there's an error
+          setProfile(null);
         }
       };
 
@@ -32,7 +32,7 @@ function Profile() {
       setProfile(null);
       setError("User is not authenticated.");
     }
-  }, [isAuthenticated]); // Dependency array includes isAuthenticated
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,10 +40,10 @@ function Profile() {
       const response = await axios.put(
         "http://localhost:3000/api/profile/",
         { name: firstname, weight: totalweight, height: totalheight },
-        { withCredentials: true } // Include cookies for authentication
+        { withCredentials: true }
       );
-      // Update profile state with the new data
-      setProfile(response.data.user); // Adjust based on your server response structure
+
+      setProfile(response.data.user);
       setError(null);
     } catch (error) {
       setError("Failed to edit the profile, please provide full information");
@@ -51,7 +51,7 @@ function Profile() {
   };
 
   const calculateBMI = (weight, height) => {
-    const heightInMeters = height / 100; // Convert height from cm to meters
+    const heightInMeters = height / 100;
     return weight / (heightInMeters * heightInMeters);
   };
 

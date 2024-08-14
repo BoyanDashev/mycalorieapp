@@ -6,7 +6,6 @@ const CalorieModal = ({ open, onClose, onSubmit, calories, setCalories }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-800 bg-opacity-50">
       <div className="relative p-4 w-full max-w-md max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
-        {/* Modal Header */}
         <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
             Edit Your Calorie Goal
@@ -35,7 +34,6 @@ const CalorieModal = ({ open, onClose, onSubmit, calories, setCalories }) => {
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-4">
           <form className="flex flex-col space-y-4" onSubmit={onSubmit}>
             <input

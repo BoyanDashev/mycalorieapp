@@ -77,7 +77,14 @@ function AddFoodModal({
   };
 
   return (
-   <div id="add-food-modal" tabIndex="-1" aria-hidden="true" className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden ${openModal ? 'block' : 'hidden'}`}>
+    <div
+      id="add-food-modal"
+      tabIndex="-1"
+      aria-hidden="true"
+      className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden ${
+        openModal ? "block" : "hidden"
+      }`}
+    >
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -89,8 +96,19 @@ function AddFoodModal({
               onClick={() => setOpenModal(false)}
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
             >
-              <svg className="w-3 h-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              <svg
+                className="w-3 h-3"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
               </svg>
               <span className="sr-only">Close modal</span>
             </button>
@@ -117,7 +135,11 @@ function AddFoodModal({
                 </div>
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="food-calories" color="gray" value="Calories" />
+                    <Label
+                      htmlFor="food-calories"
+                      color="gray"
+                      value="Calories"
+                    />
                   </div>
                   <TextInput
                     id="food-calories"
@@ -131,7 +153,11 @@ function AddFoodModal({
                 </div>
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="food-proteins" color="info" value="Proteins" />
+                    <Label
+                      htmlFor="food-proteins"
+                      color="info"
+                      value="Proteins"
+                    />
                   </div>
                   <TextInput
                     id="food-proteins"
@@ -145,7 +171,11 @@ function AddFoodModal({
                 </div>
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="food-sugars" color="success" value="Sugars" />
+                    <Label
+                      htmlFor="food-sugars"
+                      color="success"
+                      value="Sugars"
+                    />
                   </div>
                   <TextInput
                     id="food-sugars"
@@ -173,7 +203,11 @@ function AddFoodModal({
                 </div>
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="food-quantity" color="failure" value="Quantity" />
+                    <Label
+                      htmlFor="food-quantity"
+                      color="failure"
+                      value="Quantity"
+                    />
                   </div>
                   <TextInput
                     id="food-quantity"
@@ -194,14 +228,15 @@ function AddFoodModal({
               </Button>
               {error && <p className="text-red-500 mt-2">{error}</p>}
               {logSuccess && (
-                <p className="text-green-500 mt-2">Food item added successfully!</p>
+                <p className="text-green-500 mt-2">
+                  Food item added successfully!
+                </p>
               )}
             </form>
           </div>
         </div>
       </div>
     </div>
-    
   );
 }
 

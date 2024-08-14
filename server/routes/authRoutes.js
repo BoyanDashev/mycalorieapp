@@ -6,15 +6,14 @@ const FoodConsumption = require("../modules/foodConsumption");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const { getUserFoodHistory } = require("../services/foodServices"); // Import the service function
+const { getUserFoodHistory } = require("../services/foodServices");
 
 dotenv.config();
 
 const accessToken = process.env.ACCESS_TOKEN;
 
-router.use(cookieParser()); // Make sure to use cookieParser middleware
+router.use(cookieParser());
 
-// Registration route
 router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -27,7 +26,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login route
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -36,7 +34,6 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Generate JWT token
     const token = jwt.sign({ id: user.id }, accessToken, { expiresIn: "1h" });
     res.cookie("authToken", token, {
       httpOnly: true,
@@ -49,7 +46,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Check authentication route
 router.get("/check", (req, res) => {
   const token = req.cookies.authToken;
   if (!token) return res.json({ authenticated: false });
@@ -60,7 +56,6 @@ router.get("/check", (req, res) => {
   });
 });
 
-// Middleware to authenticate JWT token
 function authenticateToken(req, res, next) {
   const token = req.cookies.authToken;
   if (!token) return res.status(401).send("Access denied");
@@ -76,17 +71,15 @@ router.get("/profile", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Fetch the user details by ID
-    const user = await User.findById(userId).select("name height weight"); // Select only specific fields
+    const user = await User.findById(userId).select("name height weight");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send the user data as response
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching profile:", error); // Log the error details
+    console.error("Error fetching profile:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -120,11 +113,10 @@ router.put("/mainpage", authenticateToken, async (req, res) => {
   }
 });
 
-// Route to get user details with populated foods
 router.get("/mainpage", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId); // Populate foods
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -132,12 +124,11 @@ router.get("/mainpage", authenticateToken, async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching profile:", error); // Log the error details
+    console.error("Error fetching profile:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// Update user profile information
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -166,18 +157,14 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// tuka трябва да стане такаче да взима от усер консумпион датабазата а не от усер фоодс релацията.
-
 router.post("/food", authenticateToken, async (req, res) => {
   try {
-    // Destructure and validate input fields
     const { foodname, foodcalorie, foodprotein, foodsugar, foodfat } = req.body;
 
     if (!foodname || !foodcalorie || !foodprotein || !foodsugar || !foodfat) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Create new food item
     const newFood = new Food({
       foodname,
       foodcalorie,
@@ -193,21 +180,20 @@ router.post("/food", authenticateToken, async (req, res) => {
       food: newFood,
     });
   } catch (error) {
-    console.error("Error adding food item:", error); // Log the error details
+    console.error("Error adding food item:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
 router.get("/search", async (req, res) => {
   try {
-    const { query } = req.query; // Get search query from request
+    const { query } = req.query;
     if (!query) {
       return res.status(400).json({ message: "Query parameter is required" });
     }
 
-    // Perform search
     const foods = await Food.find({
-      foodname: { $regex: query, $options: "i" }, // Case-insensitive search
+      foodname: { $regex: query, $options: "i" },
     });
 
     res.status(200).json(foods);
@@ -219,7 +205,7 @@ router.get("/search", async (req, res) => {
 
 router.post("/food-consumption", authenticateToken, async (req, res) => {
   const { foodId, date, quantity } = req.body;
-  const userId = req.user.id; // Get userId from the authenticated user
+  const userId = req.user.id;
 
   try {
     const foodConsumption = new FoodConsumption({
@@ -236,11 +222,10 @@ router.post("/food-consumption", authenticateToken, async (req, res) => {
 });
 
 router.delete("/food-consumption", authenticateToken, async (req, res) => {
-  const userId = req.user.id; // Assume this is populated by your authenticateToken middleware
-  const itemId = req.body.id; // ID of the food consumption entry to delete (from the request body)
+  const userId = req.user.id;
+  const itemId = req.body.id;
 
   try {
-    // Find and delete the specific food consumption entry for the authenticated user
     const result = await FoodConsumption.deleteOne({
       _id: itemId,
       userId: userId,
@@ -254,20 +239,15 @@ router.delete("/food-consumption", authenticateToken, async (req, res) => {
   }
 });
 
-
-
-// Fetch food consumption history for the authenticated user
 router.get("/food-consumption", authenticateToken, async (req, res) => {
-  const userId = req.user.id; // Get userId from the authenticated user
+  const userId = req.user.id;
 
   try {
-    // Calculate start and end of today
     const now = new Date();
-    const startOfDay = new Date(now.setHours(0, 0, 0, 0)); // Start of today (midnight)
-    const endOfDay = new Date(now.setHours(23, 59, 59, 999)); // End of today (just before midnight)
+    const startOfDay = new Date(now.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(now.setHours(23, 59, 59, 999));
 
-    // Fetch food consumption data for today
-    const foodHistory = await getUserFoodHistory(userId, startOfDay, endOfDay); // Pass dates to service function
+    const foodHistory = await getUserFoodHistory(userId, startOfDay, endOfDay);
 
     res.json(foodHistory);
   } catch (error) {
@@ -275,8 +255,6 @@ router.get("/food-consumption", authenticateToken, async (req, res) => {
   }
 });
 
-
-// Logout route
 router.post("/logout", (req, res) => {
   res.clearCookie("authToken");
   res.status(200).send("Logged out");

@@ -27,7 +27,6 @@ function SearchFoodModal({
         { withCredentials: true }
       );
 
-      // Clear inputs and close the modal
       fetchFoodHistory();
       setFoodQuantity("");
       setError("");

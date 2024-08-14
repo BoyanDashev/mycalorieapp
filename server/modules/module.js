@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-// Define the user schema
 const userSchema = new Schema(
   {
     username: {
@@ -40,10 +39,6 @@ const userSchema = new Schema(
   }
 );
 
-// трябва да може да се направи, такаче да има две схеми и едната да се приема като масив в другата например
-// const userSchema = new Schema({
-// foods: [FoodsSchema]});
-
 userSchema.pre("save", async function (next) {
   try {
     if (!this.isModified("password")) {
@@ -58,7 +53,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Method to compare password
 userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
@@ -67,7 +61,6 @@ userSchema.methods.isValidPassword = async function (password) {
   }
 };
 
-// Create the model
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

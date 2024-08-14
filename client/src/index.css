@@ -10,7 +10,7 @@ body {
 
 .valid {
   @apply text-green-500;
-  /* za da promenq tik4eto da stane zeleno*/
+  
 }
 
 .hide {
@@ -19,7 +19,7 @@ body {
 
 .invalid {
   @apply text-red-500;
-  /* hiksa da stane 4erven */
+  
 }
 
 

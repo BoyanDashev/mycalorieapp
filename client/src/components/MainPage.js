@@ -57,8 +57,6 @@ const MainPage = () => {
     }
   }, [isAuthenticated]);
 
-  
-
   const fetchFoodHistory = async () => {
     try {
       const getComsunption = await axios.get(
@@ -75,7 +73,6 @@ const MainPage = () => {
 
   const handleDoubleClick = () => {
     setIsModalOpen(true);
-    
   };
 
   const handleCloseModal = () => {
@@ -99,31 +96,29 @@ const MainPage = () => {
       setError("Failed to update calorie information.");
     }
     console.log("Calorie goal updated:", calories);
-    
   };
 
-    const removeFoodItem = async (itemId) => {
-      try {
-        const response = await axios.delete(
-          `http://localhost:3000/api/food-consumption`,
-          {
-            data: { id: itemId }, // Send itemId in the request body
-            withCredentials: true,
-          }
-        );
-        fetchFoodHistory();
-      } catch (error) {
-        console.error(
-          "Error deleting food item:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
+  const removeFoodItem = async (itemId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/food-consumption`,
+        {
+          data: { id: itemId },
+          withCredentials: true,
+        }
+      );
+      fetchFoodHistory();
+    } catch (error) {
+      console.error(
+        "Error deleting food item:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   return (
     <div className="flex items-center justify-center bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
       <div className="text-center w-full max-w-4xl mx-auto mt-6 mb-6 p-8 bg-white border border-gray-300 rounded-lg shadow-lg">
-        {/* Display username */}
         <div className="w-full p-8 bg-blue-50 border border-blue-300 rounded-lg shadow-lg">
           {profile && profile.username ? (
             <div className="text-center">

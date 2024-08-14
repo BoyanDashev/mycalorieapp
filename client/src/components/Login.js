@@ -8,13 +8,12 @@ const Login = () => {
   const [password, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-  const { loginsuccess, login } = useContext(AuthContext); // Access login function from context
+  const { loginsuccess, login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Attempt to login and await its completion
       await login(user, password);
       if (loginsuccess) {
         setErrMsg("Login failed. Please try again.");

@@ -31,7 +31,6 @@ function FoodHistory({
   const totalFats = calculateTotal("foodfat");
   const totalSugars = calculateTotal("foodsugar");
 
-  // Handle display based on authentication and error state
   if (!isAuthenticated || error) {
     return <p className="text-red-500">{error}</p>;
   }
