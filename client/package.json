@@ -44,6 +44,7 @@
   "proxy": "http://localhost:5000",
   "devDependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "autoprefixer": "^10.4.19",
     "font-awesome-icons": "^1.6.0",
     "postcss": "^8.4.39",
