@@ -1,21 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import AppWithAuth from './App';
 import reportWebVitals from './reportWebVitals';
-import Register from './components/Register';
-import { AuthProvider } from './context/authProvider';
-import Login from './components/Login';
-import { BrowserRouter } from 'react-router-dom';
-
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter/>
-    <App />
-    <BrowserRouter/>
+    <AppWithAuth />
   </React.StrictMode>
 );
 
