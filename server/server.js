@@ -8,10 +8,9 @@ const port = process.env.PORT || 5000;
 const User = require("./modules/module");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
+const allowedOrigins = require("./config/allowedOrigins");
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : [];
+  
 
 const corsOptions = {
   origin: function (origin, callback) {
