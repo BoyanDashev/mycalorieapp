@@ -1,4 +1,5 @@
-const NotFound  = () => {
+const NotFound = () => {
+  console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-r from-red-400 via-blue-500 to-purple-600">
         <div className="text-center p-6 bg-white rounded-lg shadow-lg">
