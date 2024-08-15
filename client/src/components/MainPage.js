@@ -35,7 +35,7 @@ const MainPage = () => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/mainpage",
+            "/api/mainpage",
             { withCredentials: true }
           );
           setProfile(response.data);
@@ -83,7 +83,7 @@ const MainPage = () => {
     try {
       const calorieValue = calories;
       const response = await axios.put(
-        "/api/mainpage/",
+        `/api/mainpage/`,
         { calorie: calorieValue },
         { withCredentials: true }
       );
