@@ -11,14 +11,9 @@ const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const allowedOrigins = require("./config/allowedOrigins");
 
+
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: true,
   credentials: true,
 };
 
@@ -44,6 +39,7 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
   console.log(`Connected to database: ${mongoose.connection.name}`);
   console.log(`Connection host: ${mongoose.connection.host}`);
+  console.log(allowedOrigins)
 });
 
 // API Routes
