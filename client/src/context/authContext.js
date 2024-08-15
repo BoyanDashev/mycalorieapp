@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/check", {
+        const response = await axios.get("/api/check", {
           withCredentials: true,
         });
         setIsAuthenticated(response.data.authenticated);
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/login",
+        "/api/login",
         { username, password },
         { withCredentials: true }
       );
@@ -45,12 +45,12 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/logout",
+        "/api/logout",
         {},
         { withCredentials: true }
       );
       setIsAuthenticated(false);
-      window.location.href = "/api/login"; // Redirect after logout
+      window.location.href = "/api/login"; 
     } catch (error) {
       setIsAuthenticated(true);
     }
