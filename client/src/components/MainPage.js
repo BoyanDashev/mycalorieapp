@@ -60,7 +60,7 @@ const MainPage = () => {
   const fetchFoodHistory = async () => {
     try {
       const getComsunption = await axios.get(
-        "http://localhost:3000/api/food-consumption/",
+        "/api/food-consumption/",
         { withCredentials: true }
       );
       setFoodHistory(getComsunption.data);
@@ -83,7 +83,7 @@ const MainPage = () => {
     try {
       const calorieValue = calories;
       const response = await axios.put(
-        "http://localhost:3000/api/mainpage/",
+        "/api/mainpage/",
         { calorie: calorieValue },
         { withCredentials: true }
       );
@@ -101,7 +101,7 @@ const MainPage = () => {
   const removeFoodItem = async (itemId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/food-consumption`,
+        `/api/food-consumption`,
         {
           data: { id: itemId },
           withCredentials: true,

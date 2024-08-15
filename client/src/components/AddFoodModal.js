@@ -43,7 +43,7 @@ function AddFoodModal({
 
     try {
       const foodResponse = await axios.post(
-        "http://localhost:3000/api/food/",
+        "/api/food/",
         {
           foodname: foodnames,
           foodcalorie: foodcalories,
@@ -57,7 +57,7 @@ function AddFoodModal({
       const userId = profile._id;
 
       const consumptionResponse = await axios.post(
-        "http://localhost:3000/api/food-consumption/",
+        "/api/food-consumption/",
         {
           foodId: foodResponse.data.food._id,
           quantity: foodQuantity,

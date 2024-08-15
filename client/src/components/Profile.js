@@ -15,7 +15,7 @@ function Profile() {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/profile/",
+            "/api/profile/",
             { withCredentials: true }
           );
           setProfile(response.data);
@@ -38,7 +38,7 @@ function Profile() {
     e.preventDefault();
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/profile/",
+        "/api/profile/",
         { name: firstname, weight: totalweight, height: totalheight },
         { withCredentials: true }
       );
