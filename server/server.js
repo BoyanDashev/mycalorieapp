@@ -9,13 +9,26 @@ const User = require("./modules/module");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
 app.use(express.json());
-
-app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -37,7 +50,7 @@ connection.once("open", () => {
   console.log(`Connection host: ${mongoose.connection.host}`);
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port: ${port}`);
 });
 
