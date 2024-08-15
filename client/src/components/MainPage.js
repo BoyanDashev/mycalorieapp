@@ -35,7 +35,7 @@ const MainPage = () => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "/api/mainpage",
+            `/api/mainpage`,
             { withCredentials: true }
           );
           setProfile(response.data);
@@ -60,7 +60,7 @@ const MainPage = () => {
   const fetchFoodHistory = async () => {
     try {
       const getComsunption = await axios.get(
-        "/api/food-consumption/",
+        `/api/food-consumption/`,
         { withCredentials: true }
       );
       setFoodHistory(getComsunption.data);
