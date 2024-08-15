@@ -4,6 +4,7 @@
   "description": "calorie couter app",
   "main": "index.js",
   "scripts": {
+    "render-build":"npm install",
     "start-be": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
