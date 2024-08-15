@@ -4,7 +4,7 @@
   "description": "calorie couter app",
   "main": "index.js",
   "scripts": {
-    "render-build":"npm install",
+    "render-build": "npm install",
     "start-be": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -13,6 +13,7 @@
   "dependencies": {
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
@@ -21,6 +22,7 @@
     "mongoose": "^7.0.0"
   },
   "devDependencies": {
+    "bcrypt": "^5.1.1",
     "nodemon": "^2.0.22"
   },
   "author": "Boyan Dashev",
