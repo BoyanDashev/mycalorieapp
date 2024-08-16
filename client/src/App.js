@@ -139,7 +139,7 @@ function App() {
               ref={dropdownRef}
               className={`${
                 isDropdownOpen ? "block" : "hidden"
-              } md:hidden absolute right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
+              } md:hidden absolute right-0 mt-10 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
               id="dropdown-navbar"
             >
               <ul
