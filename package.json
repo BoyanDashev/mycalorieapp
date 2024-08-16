@@ -4,10 +4,10 @@
   "description": "calorie couter app",
   "main": "index.js",
   "scripts": {
-    "start-fe": "cd client && react-scripts start",
-    "start-be": "cd server && node server.js",
-    "start-both": "npm install && concurrently \"npm run start-fe\" \"npm run start-be\"",
-    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "build": "npm run build-client && npm run build-server",
+    "build-client": "cd client && npm install && npm run build",
+    "build-server": "cd server && npm install",
+    "start": "cd server && node server.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
