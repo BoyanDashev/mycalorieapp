@@ -37,7 +37,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    
       <div className="min-h-screen  bg-gradient-to-r from-slate-400 via-blue-500 to-purple-600">
         <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -216,7 +216,7 @@ function App() {
           <Route path="/home" element={<Home />} />
         </Routes>
       </div>
-    </Router>
+    
   );
 }
 

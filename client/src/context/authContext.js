@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
-
+import axiousInstance from "../API/axios";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -10,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("/api/check", {
+        const response = await axiousInstance.get("/api/check", {
           withCredentials: true,
         });
         setIsAuthenticated(response.data.authenticated);
@@ -23,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(
+      const response = await axiousInstance.post(
         "/api/login",
         { username, password },
         { withCredentials: true }
@@ -44,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post(
+      await axiousInstance.post(
         "/api/logout",
         {},
         { withCredentials: true }

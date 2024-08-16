@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
-import axios from "axios";
-
+import axiousInstance from "../API/axios";
 function SearchFoodModal({
   openOtherModal,
   profile,
@@ -17,7 +16,7 @@ function SearchFoodModal({
     try {
       const userId = profile._id;
 
-      await axios.post(
+      await axiousInstance.post(
         "/api/food-consumption/",
         {
           foodId,
@@ -39,7 +38,7 @@ function SearchFoodModal({
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get("/api/search/", {
+      const response = await axiousInstance.get("/api/search/", {
         params: { query },
       });
       setResults(response.data);

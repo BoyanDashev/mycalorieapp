@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import axiousInstance from "../API/axios";
 import { AuthContext } from "../context/authContext";
 
 function Profile() {
@@ -14,7 +14,7 @@ function Profile() {
     if (isAuthenticated) {
       const fetchProfile = async () => {
         try {
-          const response = await axios.get(
+          const response = await axiousInstance.get(
             "/api/profile/",
             { withCredentials: true }
           );
@@ -37,7 +37,7 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
+      const response = await axiousInstance.put(
         "/api/profile/",
         { name: firstname, weight: totalweight, height: totalheight },
         { withCredentials: true }

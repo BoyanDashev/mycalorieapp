@@ -46,21 +46,21 @@ connection.once("open", () => {
 app.use("/api", authRoutes);
 
 // Serve static files from the React app's build directory in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client", "build")));
+// if (process.env.NODE_ENV === "production") {
+  // app.use(express.static('static'));
 
   // All other routes should return the React app
-  app.get("*", (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname, "client", "build", "index.html"),
-      (err) => {
-        if (err) {
-          res.status(500).send("Internal Server Error");
-        }
-      }
-    );
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(
+//       path.resolve(__dirname, "client", "build", "index.html"),
+//       (err) => {
+//         if (err) {
+//           res.status(500).send("Internal Server Error");
+//         }
+//       }
+//     );
+//   });
+// // }
 
 // Start the server
 app.listen(port, "0.0.0.0", () => {

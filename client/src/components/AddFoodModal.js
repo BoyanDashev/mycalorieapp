@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
-import axios from "axios";
+import axiousInstance from "../API/axios";
 
 function AddFoodModal({
   openModal,
@@ -42,7 +42,7 @@ function AddFoodModal({
     setLogSuccess(false);
 
     try {
-      const foodResponse = await axios.post(
+      const foodResponse = await axiousInstance.post(
         "/api/food/",
         {
           foodname: foodnames,
@@ -56,7 +56,7 @@ function AddFoodModal({
 
       const userId = profile._id;
 
-      const consumptionResponse = await axios.post(
+      const consumptionResponse = await axiousInstance.post(
         "/api/food-consumption/",
         {
           foodId: foodResponse.data.food._id,

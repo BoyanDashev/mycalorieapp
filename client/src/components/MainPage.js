@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import axiousInstance from "../API/axios";
 import { AuthContext } from "../context/authContext";
 import FoodHistory from "./FoodHistory";
 import AddFoodModal from "./AddFoodModal";
 import SearchFoodModal from "./SearchFoodModal";
 import CalorieModal from "./CalorieModal";
+
 
 function getDate() {
   const today = new Date();
@@ -34,7 +35,7 @@ const MainPage = () => {
     if (isAuthenticated) {
       const fetchProfile = async () => {
         try {
-          const response = await axios.get(
+          const response = await axiousInstance.get(
             `/api/mainpage`,
             { withCredentials: true }
           );
@@ -59,7 +60,7 @@ const MainPage = () => {
 
   const fetchFoodHistory = async () => {
     try {
-      const getComsunption = await axios.get(
+      const getComsunption = await axiousInstance.get(
         `/api/food-consumption/`,
         { withCredentials: true }
       );
@@ -82,7 +83,7 @@ const MainPage = () => {
     e.preventDefault();
     try {
       const calorieValue = calories;
-      const response = await axios.put(
+      const response = await axiousInstance.put(
         `/api/mainpage/`,
         { calorie: calorieValue },
         { withCredentials: true }
@@ -100,7 +101,7 @@ const MainPage = () => {
 
   const removeFoodItem = async (itemId) => {
     try {
-      const response = await axios.delete(
+      const response = await axiousInstance.delete(
         `/api/food-consumption`,
         {
           data: { id: itemId },

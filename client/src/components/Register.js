@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../index.css";
-import axios from "axios";
+import axiousInstance from "../API/axios";
 import { Link } from "react-router-dom";
 
 const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
@@ -57,7 +57,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("/api/register", {
+      const response = await axiousInstance.post("/api/register", {
         username: user,
         password: pwd,
       });
